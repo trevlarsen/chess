@@ -56,7 +56,7 @@ public class ChessPiece {
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
         ArrayList<ChessMove> moves = switch (this.pieceType) {
             case KING -> BishopMoves.calculateMoves(board, myPosition, this);
-            case QUEEN -> BishopMoves.calculateMoves(board, myPosition, this);
+            case QUEEN -> QueenMoves.calculateMoves(board, myPosition, this);
             case BISHOP -> BishopMoves.calculateMoves(board, myPosition, this);
             case KNIGHT -> BishopMoves.calculateMoves(board, myPosition, this);
             case ROOK -> BishopMoves.calculateMoves(board, myPosition, this);
