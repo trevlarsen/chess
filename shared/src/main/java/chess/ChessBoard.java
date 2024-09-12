@@ -14,7 +14,6 @@ public class ChessBoard {
     public ChessPiece[][] pieces = new ChessPiece[8][8];
 
     public ChessBoard() {
-        resetBoard();
     }
 
     /**
@@ -89,6 +88,10 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        return "Board:" + Arrays.deepToString(pieces);
+        var rep = new StringBuilder("Board");
+        for (int i = 0; i <= 7; i++) {
+            rep.append(Arrays.deepToString(pieces[i])).append("\n");
+        }
+        return rep.toString();
     }
 }

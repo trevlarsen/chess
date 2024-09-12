@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -11,8 +12,8 @@ import java.util.Objects;
  */
 public class ChessPiece {
 
-    public ChessGame.TeamColor color;
-    public PieceType pieceType;
+    private ChessGame.TeamColor color;
+    private PieceType pieceType;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
         this.color = pieceColor;
@@ -53,7 +54,15 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        throw new RuntimeException("Not implemented");
+        ArrayList<ChessMove> moves = switch (this.pieceType) {
+            case KING -> BishopMoves.calculateMoves(board, myPosition, this);
+            case QUEEN -> BishopMoves.calculateMoves(board, myPosition, this);
+            case BISHOP -> BishopMoves.calculateMoves(board, myPosition, this);
+            case KNIGHT -> BishopMoves.calculateMoves(board, myPosition, this);
+            case ROOK -> BishopMoves.calculateMoves(board, myPosition, this);
+            default -> new ArrayList<ChessMove>();
+        };
+        return moves;
     }
 
     @Override
@@ -72,5 +81,9 @@ public class ChessPiece {
     @Override
     public String toString() {
         return "Piece: " + color + pieceType;
+    }
+
+    public static boolean inBounds(int row, int col) {
+        return (1 <= row) && (row <= 8) && (1 <= col) && (col <= 8);
     }
 }
