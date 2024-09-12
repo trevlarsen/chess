@@ -50,7 +50,7 @@ public class ChessMove {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         ChessMove that = (ChessMove) o;
-        return start == that.start && end == that.end && promotion == that.promotion;
+        return start.equals(that.start) && end.equals(that.end) && promotion == that.promotion;
     }
 
     @Override
@@ -60,6 +60,6 @@ public class ChessMove {
 
     @Override
     public String toString() {
-        return "Move: {" + start + "-->" + end + ", promotion: " + promotion;
+        return "Move: {" + start + " --> " + end + ", promotion: " + promotion + "}";
     }
 }
