@@ -59,7 +59,7 @@ public class ChessPiece {
             case QUEEN -> QueenMoves.calculateMoves(board, myPosition, this);
             case BISHOP -> BishopMoves.calculateMoves(board, myPosition, this);
             case KNIGHT -> BishopMoves.calculateMoves(board, myPosition, this);
-            case ROOK -> BishopMoves.calculateMoves(board, myPosition, this);
+            case ROOK -> RookMoves.calculateMoves(board, myPosition, this);
             default -> new ArrayList<ChessMove>();
         };
         return moves;
