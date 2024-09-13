@@ -60,6 +60,7 @@ public class ChessPiece {
             case BISHOP -> BishopMoves.calculateMoves(board, myPosition, this);
             case KNIGHT -> BishopMoves.calculateMoves(board, myPosition, this);
             case ROOK -> RookMoves.calculateMoves(board, myPosition, this);
+            case PAWN -> PawnMoves.calculateMoves(board, myPosition, this);
             default -> new ArrayList<ChessMove>();
         };
         return moves;
