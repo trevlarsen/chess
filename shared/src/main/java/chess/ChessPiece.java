@@ -54,16 +54,15 @@ public class ChessPiece {
      * @return Collection of valid moves
      */
     public Collection<ChessMove> pieceMoves(ChessBoard board, ChessPosition myPosition) {
-        ArrayList<ChessMove> moves = switch (this.pieceType) {
-            case KING -> BishopMoves.calculateMoves(board, myPosition, this);
+        return switch (this.pieceType) {
+            case KING -> KingMoves.calculateMoves(board, myPosition, this);
             case QUEEN -> QueenMoves.calculateMoves(board, myPosition, this);
             case BISHOP -> BishopMoves.calculateMoves(board, myPosition, this);
-            case KNIGHT -> BishopMoves.calculateMoves(board, myPosition, this);
+            case KNIGHT -> KnightMoves.calculateMoves(board, myPosition, this);
             case ROOK -> RookMoves.calculateMoves(board, myPosition, this);
             case PAWN -> PawnMoves.calculateMoves(board, myPosition, this);
             default -> new ArrayList<ChessMove>();
         };
-        return moves;
     }
 
     @Override
