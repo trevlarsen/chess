@@ -16,6 +16,8 @@ public class ChessGame {
 
     public ChessGame() {
         this.board = new ChessBoard();
+        board.resetBoard();
+
         this.turn = TeamColor.WHITE;
     }
 
@@ -61,7 +63,14 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
-        throw new RuntimeException("Not implemented");
+        var start = move.getStartPosition();
+        var end = move.getEndPosition();
+        var promotion = move.getPromotionPiece();
+
+        var attacker = board.pieces[start.getRow()-1][start.getColumn()-1];
+
+        board.pieces[end.getRow()-1][end.getColumn()-1] = attacker;
+        board.pieces[start.getRow()-1][start.getColumn()-1] = null;
     }
 
     /**
