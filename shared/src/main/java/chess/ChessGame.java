@@ -69,6 +69,10 @@ public class ChessGame {
 
         var attacker = board.pieces[start.getRow()-1][start.getColumn()-1];
 
+        if (promotion != null) {
+            attacker.setPieceType(promotion);
+        }
+
         board.pieces[end.getRow()-1][end.getColumn()-1] = attacker;
         board.pieces[start.getRow()-1][start.getColumn()-1] = null;
     }
