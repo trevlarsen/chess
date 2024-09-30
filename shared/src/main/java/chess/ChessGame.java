@@ -75,6 +75,12 @@ public class ChessGame {
 
         board.pieces[end.getRow()-1][end.getColumn()-1] = attacker;
         board.pieces[start.getRow()-1][start.getColumn()-1] = null;
+
+//        if (attacker.getTeamColor() == TeamColor.WHITE) {
+//            turn = TeamColor.BLACK;
+//        } else {
+//            turn = TeamColor.WHITE;
+//        }
     }
 
     /**
@@ -84,7 +90,7 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+
     }
 
     /**
@@ -106,6 +112,19 @@ public class ChessGame {
      */
     public boolean isInStalemate(TeamColor teamColor) {
         throw new RuntimeException("Not implemented");
+    }
+
+    // Returns the kings position
+    public ChessPosition getKingPosition(TeamColor teamColor) {
+        for (int i = 0; i < board.pieces.length; i++) {
+            for (int j = 0; j < board.pieces[i].length; j++) {
+                var current = board.pieces[i][j];
+                if (current != null && current.getTeamColor() == teamColor && current.getPieceType() == ChessPiece.PieceType.KING) {
+                    return new ChessPosition(i, j);
+                }
+            }
+        }
+        return null;
     }
 
     /**
