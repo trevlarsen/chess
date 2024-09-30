@@ -53,7 +53,8 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        throw new RuntimeException("Not implemented");
+        var attacker = board.pieces[startPosition.getRow()-1][startPosition.getColumn()-1];
+        return attacker.pieceMoves(board, startPosition);
     }
 
     /**
@@ -90,7 +91,21 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
-
+        var kingPosition = getKingPosition(teamColor);
+        for (int i = 0; i < board.pieces.length; i++) {
+            for (int j = 0; j < board.pieces[i].length; j++) {
+                var current = board.pieces[i][j];
+                if (current != null && current.getTeamColor() != teamColor) {
+                    var moves = current.pieceMoves(board, new ChessPosition(i+1, j+1));
+                    for (var move : moves) {
+                        if (move.getEndPosition().equals(kingPosition)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -120,7 +135,7 @@ public class ChessGame {
             for (int j = 0; j < board.pieces[i].length; j++) {
                 var current = board.pieces[i][j];
                 if (current != null && current.getTeamColor() == teamColor && current.getPieceType() == ChessPiece.PieceType.KING) {
-                    return new ChessPosition(i, j);
+                    return new ChessPosition(i+1, j+1);
                 }
             }
         }
