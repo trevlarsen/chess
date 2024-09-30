@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -53,8 +54,38 @@ public class ChessGame {
      * startPosition
      */
     public Collection<ChessMove> validMoves(ChessPosition startPosition) {
-        var attacker = board.pieces[startPosition.getRow()-1][startPosition.getColumn()-1];
-        return attacker.pieceMoves(board, startPosition);
+        // Extract information about the start position
+        var attacker = board.getPiece(startPosition);
+        var teamColor = attacker.getTeamColor();
+        var moves = attacker.pieceMoves(board, startPosition);
+
+        // Add a move if it is valid
+        var valid = new ArrayList<ChessMove>();
+        for (var move : moves) {
+            // Extract information about the move
+            var endPos = move.getEndPosition();
+            var captured = board.getPiece(endPos);
+
+            // Determine if a piece will be captured
+            boolean pieceCaptured= captured != null;
+
+            // Make move
+            board.addPiece(endPos, attacker);
+            board.pieces[startPosition.getRow()-1][startPosition.getColumn()-1] = null;
+
+            // See if it is valid
+            if (!isInCheck(teamColor)) {
+                valid.add(move);
+            }
+
+            // Undo move
+            board.addPiece(startPosition, attacker);
+            board.pieces[endPos.getRow()-1][endPos.getColumn()-1] = null;
+            if (pieceCaptured) {
+                board.addPiece(endPos, captured);
+            }
+        }
+        return valid;
     }
 
     /**
@@ -74,14 +105,8 @@ public class ChessGame {
             attacker.setPieceType(promotion);
         }
 
-        board.pieces[end.getRow()-1][end.getColumn()-1] = attacker;
+        board.addPiece(end, attacker);
         board.pieces[start.getRow()-1][start.getColumn()-1] = null;
-
-//        if (attacker.getTeamColor() == TeamColor.WHITE) {
-//            turn = TeamColor.BLACK;
-//        } else {
-//            turn = TeamColor.WHITE;
-//        }
     }
 
     /**
