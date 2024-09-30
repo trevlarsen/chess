@@ -77,16 +77,16 @@ public class ChessBoard {
 
     // Gets each position and piece for a given team
     public Map<ChessPosition, ChessPiece> getTeamPiecePositions(ChessGame.TeamColor teamColor) {
-        Map<ChessPosition, ChessPiece> PiecePositions = new HashMap<>();
+        Map<ChessPosition, ChessPiece> piecePositions = new HashMap<>();
         for (int i = 0; i < pieces.length; i++) {
-            for (int j = 0; j < pieces.length; j++) {
+            for (int j = 0; j < pieces[0].length; j++) {
                 var current = pieces[i][j];
                 if (current != null && current.getTeamColor() == teamColor) {
-                    PiecePositions.put(new ChessPosition(i+1, j+1), current);
+                    piecePositions.put(new ChessPosition(i+1, j+1), current);
                 }
             }
         }
-        return PiecePositions;
+        return piecePositions;
     }
 
     @Override
