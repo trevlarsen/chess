@@ -161,9 +161,9 @@ public class ChessGame {
     public boolean isInCheckmate(TeamColor teamColor) {
 
         if (isInCheck(teamColor)) {
-            var PiecePositions = board.getTeamPiecePositions(teamColor);
-            for (Map.Entry<ChessPosition, ChessPiece> entry : PiecePositions.entrySet()) {
-                if (!validMoves(entry.getKey()).isEmpty()) {
+            var piecePositions = board.getTeamPiecePositions(teamColor);
+            for (var position : piecePositions) {
+                if (!validMoves(position).isEmpty()) {
                     return false;
                 }
             }
@@ -180,9 +180,9 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        var PiecePositions = board.getTeamPiecePositions(teamColor);
-        for (Map.Entry<ChessPosition, ChessPiece> entry : PiecePositions.entrySet()) {
-            if (!validMoves(entry.getKey()).isEmpty()) {
+        var piecePositions = board.getTeamPiecePositions(teamColor);
+        for (var position : piecePositions) {
+            if (!validMoves(position).isEmpty()) {
                 return false;
             }
         }

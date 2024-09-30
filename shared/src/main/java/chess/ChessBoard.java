@@ -1,6 +1,7 @@
 package chess;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
@@ -76,17 +77,17 @@ public class ChessBoard {
     }
 
     // Gets each position and piece for a given team
-    public Map<ChessPosition, ChessPiece> getTeamPiecePositions(ChessGame.TeamColor teamColor) {
-        Map<ChessPosition, ChessPiece> piecePositions = new HashMap<>();
+    public ArrayList<ChessPosition> getTeamPiecePositions(ChessGame.TeamColor teamColor) {
+        var PiecePositions = new ArrayList<ChessPosition>();
         for (int i = 0; i < pieces.length; i++) {
-            for (int j = 0; j < pieces[0].length; j++) {
+            for (int j = 0; j < pieces.length; j++) {
                 var current = pieces[i][j];
                 if (current != null && current.getTeamColor() == teamColor) {
-                    piecePositions.put(new ChessPosition(i+1, j+1), current);
+                    PiecePositions.add(new ChessPosition(i+1, j+1));
                 }
             }
         }
-        return piecePositions;
+        return PiecePositions;
     }
 
     @Override
