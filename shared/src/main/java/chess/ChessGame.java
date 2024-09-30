@@ -2,6 +2,7 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -95,18 +96,36 @@ public class ChessGame {
      * @throws InvalidMoveException if move is invalid
      */
     public void makeMove(ChessMove move) throws InvalidMoveException {
+        // Extract information about move
         var start = move.getStartPosition();
         var end = move.getEndPosition();
         var promotion = move.getPromotionPiece();
-
         var attacker = board.pieces[start.getRow()-1][start.getColumn()-1];
 
+        // Check that it's the attackers turn and that the move is valid
+        if (attacker == null) {
+            throw new InvalidMoveException("There is no piece there");
+        } else if (attacker.getTeamColor() != turn) {
+            throw new InvalidMoveException("It's not your turn");
+        } else if (!validMoves(start).contains(move)) {
+            throw new InvalidMoveException("Invalid Move");
+        }
+
+        // Implement any promotion
         if (promotion != null) {
             attacker.setPieceType(promotion);
         }
 
+        // Move the pieces
         board.addPiece(end, attacker);
         board.pieces[start.getRow()-1][start.getColumn()-1] = null;
+
+        // Switch turns
+        if (turn == TeamColor.WHITE) {
+            setTeamTurn(TeamColor.BLACK);
+        } else {
+            setTeamTurn(TeamColor.WHITE);
+        }
     }
 
     /**
@@ -151,7 +170,13 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
-        throw new RuntimeException("Not implemented");
+        var PiecePositions = board.getTeamPiecePositions(teamColor);
+        for (Map.Entry<ChessPosition, ChessPiece> entry : PiecePositions.entrySet()) {
+            if (!validMoves(entry.getKey()).isEmpty()) {
+                return false;
+            }
+        }
+        return !isInCheck(teamColor);
     }
 
     // Returns the kings position
