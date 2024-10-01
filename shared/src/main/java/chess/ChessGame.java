@@ -2,7 +2,6 @@ package chess;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -135,13 +134,18 @@ public class ChessGame {
      * @return True if the specified team is in check
      */
     public boolean isInCheck(TeamColor teamColor) {
+        // Get king position
         var kingPosition = getKingPosition(teamColor);
+
+        // Look at each position on the board
         for (int i = 0; i < board.pieces.length; i++) {
             for (int j = 0; j < board.pieces[i].length; j++) {
                 var current = board.pieces[i][j];
+                // If the current position contain an enemy piece, see if it can attack the king
                 if (current != null && current.getTeamColor() != teamColor) {
                     var moves = current.pieceMoves(board, new ChessPosition(i+1, j+1));
                     for (var move : moves) {
+                        // If any piece can reach the king, them the team is in check
                         if (move.getEndPosition().equals(kingPosition)) {
                             return true;
                         }
@@ -159,8 +163,9 @@ public class ChessGame {
      * @return True if the specified team is in checkmate
      */
     public boolean isInCheckmate(TeamColor teamColor) {
-
+        // Determine if the team is at least in check
         if (isInCheck(teamColor)) {
+            // Check to see if the team is also in stalemate, meaning they have no more valid moves
             var piecePositions = board.getTeamPiecePositions(teamColor);
             for (var position : piecePositions) {
                 if (!validMoves(position).isEmpty()) {
@@ -180,23 +185,27 @@ public class ChessGame {
      * @return True if the specified team is in stalemate, otherwise false
      */
     public boolean isInStalemate(TeamColor teamColor) {
+        // Check if any of the team's pieces have valid moves
         var piecePositions = board.getTeamPiecePositions(teamColor);
         for (var position : piecePositions) {
+            // If they do, then the team is not in stalemate
             if (!validMoves(position).isEmpty()) {
                 return false;
             }
         }
+        // Otherwise, they are in stalemate only if they are not also in check
         return !isInCheck(teamColor);
     }
 
     // Returns the kings position
     public ChessPosition getKingPosition(TeamColor teamColor) {
-        for (int i = 0; i < board.pieces.length; i++) {
-            for (int j = 0; j < board.pieces[i].length; j++) {
-                var current = board.pieces[i][j];
-                if (current != null && current.getTeamColor() == teamColor && current.getPieceType() == ChessPiece.PieceType.KING) {
-                    return new ChessPosition(i+1, j+1);
-                }
+        // Look at each of the teams piece positions
+        var piecePositions = board.getTeamPiecePositions(teamColor);
+        for (var position : piecePositions) {
+            var current = board.getPiece(position);
+            // Return the team position for the king
+            if (current != null && current.getTeamColor() == teamColor && current.getPieceType() == ChessPiece.PieceType.KING) {
+                return position;
             }
         }
         return null;
