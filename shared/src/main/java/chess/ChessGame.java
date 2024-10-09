@@ -12,14 +12,14 @@ import java.util.Objects;
  */
 public class ChessGame {
 
-    public ChessBoard board;
+    ChessBoard board;
     public TeamColor turn;
 
     public ChessGame() {
-        this.board = new ChessBoard();
+        board = new ChessBoard();
         board.resetBoard();
 
-        this.turn = TeamColor.WHITE;
+        turn = TeamColor.WHITE;
     }
 
     /**

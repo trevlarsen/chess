@@ -1,6 +1,6 @@
-# My notes
+****# My notes
 
-## Javascript Fundamentals
+# Javascript Fundamentals
 
 ### Datatypes
 
@@ -16,7 +16,7 @@
 - int (32)
 - long (64)
 
-
+****
 - float (32)
 - double (64)
 
@@ -261,3 +261,118 @@ var numbers = new ArrayList<Integer>();
 numbers.add(42);
 int first = numbers.get(0);
 ```
+
+
+# Object Oriented Programming
+
+
+### Classes
+- Arguments are just copies of the object references that are passed into a method. For this reason, methods cannot reassign objects or be mutated since they are out of scope once the method finishes execution.
+- Multiple constructors can be declared having the class name. The one called depends on the arguments passed during initializations. Constructors can be called within in each other to avoid duplication of code (must be first statement, must use 'this' keyword). Uninitialized values in are set to defaults (0, null, false) unless initialized when defined.
+- Use the final modifier to state that the reference will never change. These instance variables must be initialized in the constructor.
+- Static variables are shared between all instances. In other words only one exists per class. They can be modified by invoking methods on any instance. Most of the time these variables are also 'final' constants.
+- Static methods are not invoked from objects but from the class itself. 
+
+
+### Records
+Simplified class syntax for classes used to represent data.
+
+```
+public record Pet(int id, String name, String type) {}
+```
+
+They automatically generate constructor, getters, and overrides.
+Can add methods to the record, but in order to change any instance variables they must return a new record.
+
+```
+public record Pet(int id, String name, String type) {
+    Pet rename(String newName) {
+        return new Pet(id, newName, type);
+    }
+}
+```
+
+Note that record fields are immutable.
+Getters are called using the .<field>() syntax.
+Overrides automatically compare all fields.
+
+Can create custom constructors on top of the auto (canonical) constructor, but it must call the canonical constructor in the first line (or another constructor that calls the canonical constructor).
+The canonical constructor can be overwritten by creating a constructor with the canonical arguments.
+
+
+### Nested Classes
+
+- Declared as static. Private makes them hidden from other classes. Public allows them to be accessed using Outer.Inner syntax.
+- No functional benefit but just helps organize code.
+- **Inner classes**: Not declared as static. Inner class objects belong to Outer class objects and can therefore access the Outer object's instance variables and methods.
+
+
+
+# Interfaces and Lambda Expressions
+
+
+### Abstract Classes
+
+* Used to allow for heterogeneous collections.
+* It can be inherited from but not instantiated.
+* Can be used as reference types.
+* Can have abstract methods that need to be defined in subclasses.
+* Can have non-abstract methods that are inherited.
+* *Use the abstract keyword when declaring the class*
+
+
+### Interfaces
+
+- Allows for method inheritance for classes that should not be directly inherited.
+- Used for providing services(methods) to many classes without having to implement all the methods.
+- Must declare any used methods in the interface. Each inheriting class must implement these methods.
+- Methods to be implemented from the interface must be declared public so the interface can interact with them.
+- When should I use the default modifier
+
+Example:
+
+Interface declares two methods and implements one method that incorporates the declared only methods.
+```
+public interface IntSequence {
+    boolean hasNext();
+    int next();
+
+  public static double average(IntSequence seq, int n) {
+      int count = 0;
+      double sum = 0;
+      while (seq.hasNext() && count < n) {
+          count++;
+          sum += seq.next();
+      }
+      return count == 0 ? 0 : sum / count;
+  }
+}
+```
+The inheriting class must implement the two interface methods before having access to the inherited method implementation.
+```
+public class SquareSequence implements IntSequence {
+    private int i;
+
+    public boolean hasNext() {
+        return true;
+    }
+
+    public int next() {
+        i++;
+        return i * i;
+    }
+}
+```
+
+### Casting
+
+Casting works when we are sure the datatypes match. This is the pattern matching example.
+
+``` 
+if (sequence instanceof DigitSequence digits) {
+    // Here, you can use the digits variable
+    ...
+}
+```
+
+
