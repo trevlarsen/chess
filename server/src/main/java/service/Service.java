@@ -11,7 +11,7 @@ public class Service {
     final static MemoryGameDOA gameDataAccess = new MemoryGameDOA();
     final static MemoryAuthDOA authDataAccess = new MemoryAuthDOA();
 
-    public Service() throws DataAccessException {}
+    public Service() throws DataAccessException{}
 
     public void clear() throws DataAccessException {
         try {
