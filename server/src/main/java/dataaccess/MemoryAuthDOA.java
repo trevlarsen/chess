@@ -3,6 +3,7 @@ package dataaccess;
 import model.AuthData;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 public class MemoryAuthDOA implements AuthDOAInterface{
 
@@ -11,6 +12,12 @@ public class MemoryAuthDOA implements AuthDOAInterface{
 
     public MemoryAuthDOA() {}
 
+
+    @Override
+    public AuthData newAuth(String username) {
+        String authToken = UUID.randomUUID().toString();
+        return new AuthData(authToken, username);
+    }
 
     // Adds an AuthData to the database
     @Override

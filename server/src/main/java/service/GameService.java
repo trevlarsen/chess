@@ -12,7 +12,7 @@ public class GameService {
 
     public int createGame() throws DataAccessException {
         try {
-
+            return 1;
         } catch (Exception e) {
             throw new DataAccessException("Error:" + e.getMessage());
         }
@@ -20,7 +20,7 @@ public class GameService {
 
     public void joinGame() throws DataAccessException {
         try {
-
+            var i = 9;
         } catch (Exception e) {
             throw new DataAccessException("Error:" + e.getMessage());
         }
@@ -28,7 +28,7 @@ public class GameService {
 
     public ArrayList<GameData> listGames() throws DataAccessException {
         try {
-
+            return new ArrayList<>();
         } catch (Exception e) {
             throw new DataAccessException("Error:" + e.getMessage());
         }
