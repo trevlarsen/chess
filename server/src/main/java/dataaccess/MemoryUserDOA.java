@@ -34,7 +34,6 @@ public class MemoryUserDOA implements UserDOAInterface {
     public boolean deleteAllUsers() {
         userDatabase.clear();
         return true;
-
     }
 }
 
