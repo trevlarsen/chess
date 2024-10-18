@@ -15,18 +15,27 @@ public class MemoryUserDOA implements UserDOAInterface {
     // Adds a user to the database
     @Override
     public void createUser(UserData userData) {
-
+        userDatabase.add(userData);
     }
 
-    // Find and return UserData based on username, null if doesn't exist
+    // Find and return UserData based on username, null if it doesn't exist
     @Override
     public UserData getUser(String username) {
+        for (var user : userDatabase) {
+            if (user.username().equals(username)) {
+                return user;
+            }
+        }
         return null;
     }
 
     // Deletes every user in the database
     @Override
     public boolean deleteAllUsers() {
-        return false;
+        userDatabase.clear();
+        return true;
+
     }
 }
+
+
