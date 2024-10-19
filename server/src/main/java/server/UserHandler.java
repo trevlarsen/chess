@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import model.UserData;
 import model.reponses.EmptyResponse;
 import model.requests.LoginRequest;
@@ -18,11 +17,11 @@ public class UserHandler {
     private static UserHandler instance;
 
 
-    public UserHandler() throws DataAccessException {
+    public UserHandler() {
     }
 
 
-    public static UserHandler getInstance() throws DataAccessException {
+    public static UserHandler getInstance() {
         if (instance == null) {
             instance = new UserHandler(); // Ensure the instance is assigned here
         }

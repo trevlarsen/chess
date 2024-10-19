@@ -1,9 +1,9 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
+import model.reponses.EmptyResponse;
+import model.reponses.ErrorResponse;
 import service.Service;
-import spark.Request;
 import spark.Response;
 
 public class Handler {
@@ -12,29 +12,24 @@ public class Handler {
 
     private static Handler instance;
 
-    public Handler() throws DataAccessException {
+    public Handler() {
     }
 
-    public static Handler getInstance() throws DataAccessException {
+    public static Handler getInstance() {
         if (instance == null) {
-            instance = new Handler(); // Ensure the instance is assigned here
+            instance = new Handler();
         }
         return instance;
     }
 
-    public Object clear(Request req, Response res) {
+    public Object clear(Response response) {
         try {
-            service.clear(); // Clear service data
-            res.status(200); // Success status
-            return new Gson().toJson(new ResponseMessage("Success"));
+            service.clear();
+            response.status(200);
+            return new Gson().toJson(new EmptyResponse());
         } catch (Exception e) {
-            res.status(500); // Error status
-            return new Gson().toJson(new ResponseMessage("Error: " + e.getMessage()));
-        }
-    }
-
-    private static class ResponseMessage {
-        public ResponseMessage(String message) {
+            response.status(500);
+            return new Gson().toJson(new ErrorResponse("Error: " + e.getMessage()));
         }
     }
 }

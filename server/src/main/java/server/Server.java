@@ -4,7 +4,8 @@ import spark.*;
 
 public class Server {
 
-    public Server() {}
+    public Server() {
+    }
 
     public int run(int desiredPort) {
         Spark.port(desiredPort);
@@ -12,7 +13,7 @@ public class Server {
         Spark.staticFiles.location("web");
 
         // Register your endpoints and handle exceptions here.
-        Spark.delete("/db", (req, res) -> (Handler.getInstance()).clear(req,res));
+        Spark.delete("/db", (req, res) -> (Handler.getInstance()).clear(res));
 
         Spark.post("/user", (req, res) -> (UserHandler.getInstance()).register(req, res));
         Spark.post("/session", (req, res) -> (UserHandler.getInstance()).login(req, res));
@@ -21,9 +22,6 @@ public class Server {
         Spark.post("/game", (req, res) -> (GameHandler.getInstance()).createGame(req, res));
         Spark.put("/game", (req, res) -> (GameHandler.getInstance()).joinGame(req, res));
         Spark.get("/game", (req, res) -> (GameHandler.getInstance()).listGames(req, res));
-
-        //This line initializes the server and can be removed once you have a functioning endpoint 
-//        Spark.init();
 
         Spark.awaitInitialization();
         return Spark.port();

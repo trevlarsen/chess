@@ -1,7 +1,6 @@
 package server;
 
 import com.google.gson.Gson;
-import dataaccess.DataAccessException;
 import model.reponses.EmptyResponse;
 import model.requests.CreateGameRequest;
 import model.requests.JoinGameRequest;
@@ -18,10 +17,10 @@ public class GameHandler {
 
     private static GameHandler instance;
 
-    public GameHandler() throws DataAccessException {
+    public GameHandler() {
     }
 
-    public static GameHandler getInstance() throws DataAccessException {
+    public static GameHandler getInstance() {
         if (instance == null) {
             instance = new GameHandler(); // Ensure the instance is assigned here
         }

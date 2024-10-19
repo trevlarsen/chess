@@ -1,8 +1,5 @@
 package service;
 
-import chess.ChessGame;
-import com.google.gson.JsonIOException;
-import dataaccess.DataAccessException;
 import model.GameData;
 import model.reponses.CreateGameResponse;
 import model.reponses.ErrorResponse;
@@ -11,8 +8,6 @@ import model.requests.JoinGameRequest;
 import model.results.CreateGameResult;
 import model.results.JoinGameResult;
 import model.results.ListGamesResult;
-
-import java.util.ArrayList;
 
 import static service.Service.*;
 
