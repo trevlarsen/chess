@@ -7,5 +7,5 @@ public interface UserDOAInterface {
 
     UserData getUser(String username); // Find and return UserData based on username, null if doesn't exist
 
-    boolean deleteAllUsers(); // Deletes every user in the database
+    void deleteAllUsers(); // Deletes every user in the database
 }

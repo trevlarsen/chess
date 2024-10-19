@@ -9,7 +9,6 @@ public class MemoryAuthDOA implements AuthDOAInterface {
 
     private static ArrayList<AuthData> authDatabase = new ArrayList<>();
 
-
     public MemoryAuthDOA() {
     }
 
@@ -22,7 +21,7 @@ public class MemoryAuthDOA implements AuthDOAInterface {
 
     // Adds an AuthData to the database
     @Override
-    public void createAuth(AuthData authData) {
+    public void addAuth(AuthData authData) {
         authDatabase.add(authData);
     }
 
@@ -46,8 +45,7 @@ public class MemoryAuthDOA implements AuthDOAInterface {
 
     // Deletes every AuthData in the database
     @Override
-    public boolean deleteAllAuths() {
+    public void deleteAllAuths() {
         authDatabase.clear();
-        return true;
     }
 }

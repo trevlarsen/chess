@@ -21,7 +21,7 @@ public class MemoryGameDOA implements GameDOAInterface {
 
     // Adds a game to the database
     @Override
-    public void createGame(GameData gameData) {
+    public void addGame(GameData gameData) {
         gameDatabase.add(gameData);
     }
 
@@ -56,7 +56,7 @@ public class MemoryGameDOA implements GameDOAInterface {
                     return false;
                 }
                 gameDatabase.remove(game);
-                createGame(updatedGame);
+                addGame(updatedGame);
                 return true;
             }
         }
@@ -65,8 +65,7 @@ public class MemoryGameDOA implements GameDOAInterface {
 
     // Deletes every game in the database
     @Override
-    public boolean deleteAllGames() {
+    public void deleteAllGames() {
         gameDatabase.clear();
-        return true;
     }
 }

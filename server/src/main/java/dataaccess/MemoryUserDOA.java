@@ -9,7 +9,8 @@ public class MemoryUserDOA implements UserDOAInterface {
     private static ArrayList<UserData> userDatabase = new ArrayList<>();
 
 
-    public MemoryUserDOA() {}
+    public MemoryUserDOA() {
+    }
 
 
     // Adds a user to the database
@@ -31,9 +32,8 @@ public class MemoryUserDOA implements UserDOAInterface {
 
     // Deletes every user in the database
     @Override
-    public boolean deleteAllUsers() {
+    public void deleteAllUsers() {
         userDatabase.clear();
-        return true;
     }
 }
 

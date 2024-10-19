@@ -30,7 +30,7 @@ public class UserService {
 
             userDataAccess.createUser(user);
             var auth = authDataAccess.newAuth(user.username());
-            authDataAccess.createAuth(auth);
+            authDataAccess.addAuth(auth);
             return new RegisterResult(true, 200, new ErrorResponse("{}"), new RegisterResponse(user.username(), auth.authToken()));
 
         } catch (Exception e) {
@@ -52,7 +52,7 @@ public class UserService {
             }
 
             var auth = authDataAccess.newAuth(loginRequest.username());
-            authDataAccess.createAuth(auth);
+            authDataAccess.addAuth(auth);
             return new LoginResult(true, 200, new ErrorResponse("{}"), auth);
 
         } catch (Exception e) {

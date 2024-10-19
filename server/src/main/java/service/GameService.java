@@ -28,7 +28,7 @@ public class GameService {
             }
 
             GameData newGame = gameDataAccess.newGame(gameName);
-            gameDataAccess.createGame(newGame);
+            gameDataAccess.addGame(newGame);
 
             return new CreateGameResult(true, 200, new ErrorResponse("{}"), new CreateGameResponse(newGame.gameID()));
 
