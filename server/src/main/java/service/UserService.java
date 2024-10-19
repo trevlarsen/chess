@@ -2,11 +2,11 @@ package service;
 
 import model.UserData;
 import model.reponses.ErrorResponse;
-import model.reponses.UserResponse;
+import model.reponses.RegisterResponse;
 import model.requests.LoginRequest;
 import model.results.LoginResult;
 import model.results.LogoutResult;
-import model.results.UserResult;
+import model.results.RegisterResult;
 
 import java.util.Objects;
 
@@ -17,24 +17,24 @@ public class UserService {
     public UserService() {
     }
 
-    public UserResult register(UserData user) {
+    public RegisterResult register(UserData user) {
         try {
             if (user.username() == null || user.password() == null || user.email() == null) {
-                return new UserResult(false, 400, new ErrorResponse("Error: missing fields"), null);
+                return new RegisterResult(false, 400, new ErrorResponse("Error: missing fields"), null);
             }
 
             UserData existingUser = userDataAccess.getUser(user.username());
             if (existingUser != null) {
-                return new UserResult(false, 403, new ErrorResponse("Error: username already taken"), null);
+                return new RegisterResult(false, 403, new ErrorResponse("Error: username already taken"), null);
             }
 
             userDataAccess.createUser(user);
             var auth = authDataAccess.newAuth(user.username());
             authDataAccess.createAuth(auth);
-            return new UserResult(true, 200, new ErrorResponse("{}"), new UserResponse(user.username(), auth.authToken()));
+            return new RegisterResult(true, 200, new ErrorResponse("{}"), new RegisterResponse(user.username(), auth.authToken()));
 
         } catch (Exception e) {
-            return new UserResult(false, 500, new ErrorResponse("Error: " + e.getMessage()), null);
+            return new RegisterResult(false, 500, new ErrorResponse("Error: " + e.getMessage()), null);
         }
     }
 

@@ -3,10 +3,11 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.UserData;
+import model.reponses.EmptyResponse;
 import model.requests.LoginRequest;
 import model.results.LoginResult;
 import model.results.LogoutResult;
-import model.results.UserResult;
+import model.results.RegisterResult;
 import service.UserService;
 import spark.Request;
 import spark.Response;
@@ -32,11 +33,11 @@ public class UserHandler {
     public Object register(Request request, Response response) {
         UserData userRequest = new Gson().fromJson(request.body(), UserData.class);
 
-        UserResult result = service.register(userRequest);
+        RegisterResult result = service.register(userRequest);
 
         response.status(result.statusCode());
         if (result.success()) {
-            return new Gson().toJson(result.userResponse());
+            return new Gson().toJson(result.registerResponse());
         } else {
             return new Gson().toJson(result.errorMessage());
         }
@@ -64,7 +65,7 @@ public class UserHandler {
 
         response.status(result.statusCode());
         if (result.success()) {
-            return new Gson().toJson(new Object());
+            return new Gson().toJson(new EmptyResponse());
         } else {
             return new Gson().toJson(result.errorMessage());
         }

@@ -1,14 +1,16 @@
 package service;
 
 import chess.ChessGame;
+import com.google.gson.JsonIOException;
 import dataaccess.DataAccessException;
 import model.GameData;
-import model.UserData;
 import model.reponses.CreateGameResponse;
 import model.reponses.ErrorResponse;
-import model.reponses.UserResponse;
+import model.reponses.ListGamesResponse;
+import model.requests.JoinGameRequest;
 import model.results.CreateGameResult;
-import model.results.UserResult;
+import model.results.JoinGameResult;
+import model.results.ListGamesResult;
 
 import java.util.ArrayList;
 
@@ -40,19 +42,53 @@ public class GameService {
         }
     }
 
-    public void joinGame() throws DataAccessException {
+    public JoinGameResult joinGame(String authToken, JoinGameRequest joinGameRequest) {
         try {
-            var i = 9;
+            if (authToken == null || joinGameRequest == null || joinGameRequest.playerColor() == null || joinGameRequest.gameID() == null) {
+                return new JoinGameResult(false, 400, new ErrorResponse("Error: missing fields"));
+            }
+
+            if (authDataAccess.getAuth(authToken) == null) {
+                return new JoinGameResult(false, 401, new ErrorResponse("Error: unauthorized"));
+            }
+
+            var playerColor = joinGameRequest.playerColor();
+            int gameID = joinGameRequest.gameID();
+
+            if (gameDataAccess.getGame(gameID) == null) {
+                return new JoinGameResult(false, 400, new ErrorResponse("Error: game not found"));
+            }
+
+            var user = authDataAccess.getAuth(authToken);
+            var success = gameDataAccess.joinGame(user.username(), playerColor, gameID);
+
+            if (!success) {
+                return new JoinGameResult(false, 403, new ErrorResponse("Error: player color already taken"));
+            }
+
+            return new JoinGameResult(true, 200, new ErrorResponse("Error: player color already taken"));
+
         } catch (Exception e) {
-            throw new DataAccessException("Error:" + e.getMessage());
+            return new JoinGameResult(false, 500, new ErrorResponse("Error: " + e.getMessage()));
         }
     }
 
-    public ArrayList<GameData> listGames() throws DataAccessException {
+    public ListGamesResult listGames(String authToken) {
         try {
-            return new ArrayList<>();
+            if (authToken == null) {
+                return new ListGamesResult(false, 400, new ErrorResponse("Error: missing fields"), null);
+            }
+
+            if (authDataAccess.getAuth(authToken) == null) {
+                return new ListGamesResult(false, 401, new ErrorResponse("Error: unauthorized"), null);
+            }
+
+            ListGamesResponse listGamesResponse = new ListGamesResponse(gameDataAccess.getAllGames());
+
+            return new ListGamesResult(true, 200, new ErrorResponse("{}"), listGamesResponse);
+
         } catch (Exception e) {
-            throw new DataAccessException("Error:" + e.getMessage());
+            return new ListGamesResult(false, 500, new ErrorResponse("Error: " + e.getMessage()), null);
         }
     }
 }

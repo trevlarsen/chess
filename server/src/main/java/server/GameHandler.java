@@ -2,10 +2,12 @@ package server;
 
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
-import model.UserData;
+import model.reponses.EmptyResponse;
 import model.requests.CreateGameRequest;
+import model.requests.JoinGameRequest;
 import model.results.CreateGameResult;
-import model.results.UserResult;
+import model.results.JoinGameResult;
+import model.results.ListGamesResult;
 import service.GameService;
 import spark.Request;
 import spark.Response;
@@ -41,11 +43,30 @@ public class GameHandler {
     }
 
     public Object joinGame(Request request, Response response) {
-        return new Object();
+        String authToken = request.headers("authorization");
+        JoinGameRequest joinGameRequest = new Gson().fromJson(request.body(), JoinGameRequest.class);
+
+        JoinGameResult result = service.joinGame(authToken, joinGameRequest);
+
+        response.status(result.statusCode());
+        if (result.success()) {
+            return new Gson().toJson(new EmptyResponse());
+        } else {
+            return new Gson().toJson(result.errorMessage());
+        }
     }
 
     public Object listGames(Request request, Response response) {
-        return new Object();
+        String authToken = request.headers("authorization");
+
+        ListGamesResult result = service.listGames(authToken);
+
+        response.status(result.statusCode());
+        if (result.success()) {
+            return new Gson().toJson(result.listGamesResponse());
+        } else {
+            return new Gson().toJson(result.errorMessage());
+        }
     }
 
 }

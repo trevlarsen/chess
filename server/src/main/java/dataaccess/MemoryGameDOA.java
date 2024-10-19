@@ -48,9 +48,9 @@ public class MemoryGameDOA implements GameDOAInterface {
         for (var game : gameDatabase) {
             if (game.gameID() == gameID) {
                 GameData updatedGame;
-                if (playerColor == ChessGame.TeamColor.WHITE) {
+                if (playerColor == ChessGame.TeamColor.WHITE && game.whiteUsername() == null) {
                     updatedGame = new GameData(gameID, username, game.blackUsername(), game.gameName(), game.game());
-                } else if (playerColor == ChessGame.TeamColor.BLACK) {
+                } else if (playerColor == ChessGame.TeamColor.BLACK && game.blackUsername() == null) {
                     updatedGame = new GameData(gameID, game.whiteUsername(), username, game.gameName(), game.game());
                 } else {
                     return false;
