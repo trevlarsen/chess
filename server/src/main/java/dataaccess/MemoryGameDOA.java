@@ -5,13 +5,19 @@ import model.GameData;
 
 import java.util.ArrayList;
 
-public class MemoryGameDOA implements GameDOAInterface{
+public class MemoryGameDOA implements GameDOAInterface {
 
     private static ArrayList<GameData> gameDatabase = new ArrayList<>();
+    private int nextGameID = 1;
+
+    public MemoryGameDOA() {
+    }
 
 
-    public MemoryGameDOA() {}
-
+    @Override
+    public GameData newGame(String gameName) {
+        return new GameData(nextGameID++, null, null, gameName, new ChessGame());
+    }
 
     // Adds a game to the database
     @Override

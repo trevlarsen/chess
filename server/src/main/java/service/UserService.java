@@ -10,8 +10,7 @@ import model.results.UserResult;
 
 import java.util.Objects;
 
-import static service.Service.authDataAccess;
-import static service.Service.userDataAccess;
+import static service.Service.*;
 
 public class UserService {
 

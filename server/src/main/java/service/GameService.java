@@ -1,20 +1,42 @@
 package service;
 
+import chess.ChessGame;
 import dataaccess.DataAccessException;
 import model.GameData;
+import model.UserData;
+import model.reponses.CreateGameResponse;
+import model.reponses.ErrorResponse;
+import model.reponses.UserResponse;
+import model.results.CreateGameResult;
+import model.results.UserResult;
 
 import java.util.ArrayList;
 
+import static service.Service.*;
+
 public class GameService {
 
-    public GameService() {}
+    public GameService() {
+    }
 
 
-    public int createGame() throws DataAccessException {
+    public CreateGameResult createGame(String authToken, String gameName) {
         try {
-            return 1;
+            if (authToken == null || gameName == null) {
+                return new CreateGameResult(false, 400, new ErrorResponse("Error: missing fields"), null);
+            }
+
+            if (authDataAccess.getAuth(authToken) == null) {
+                return new CreateGameResult(false, 401, new ErrorResponse("Error: unauthorized"), null);
+            }
+
+            GameData newGame = gameDataAccess.newGame(gameName);
+            gameDataAccess.createGame(newGame);
+
+            return new CreateGameResult(true, 200, new ErrorResponse("{}"), new CreateGameResponse(newGame.gameID()));
+
         } catch (Exception e) {
-            throw new DataAccessException("Error:" + e.getMessage());
+            return new CreateGameResult(false, 500, new ErrorResponse("Error: " + e.getMessage()), null);
         }
     }
 

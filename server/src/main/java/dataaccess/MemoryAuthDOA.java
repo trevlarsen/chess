@@ -5,12 +5,13 @@ import model.AuthData;
 import java.util.ArrayList;
 import java.util.UUID;
 
-public class MemoryAuthDOA implements AuthDOAInterface{
+public class MemoryAuthDOA implements AuthDOAInterface {
 
     private static ArrayList<AuthData> authDatabase = new ArrayList<>();
 
 
-    public MemoryAuthDOA() {}
+    public MemoryAuthDOA() {
+    }
 
 
     @Override
