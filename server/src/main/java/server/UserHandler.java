@@ -3,10 +3,9 @@ package server;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.UserData;
-import model.reponses.ErrorResponse;
-import model.reponses.UserResponse;
 import model.requests.LoginRequest;
 import model.results.LoginResult;
+import model.results.LogoutResult;
 import model.results.UserResult;
 import service.UserService;
 import spark.Request;
@@ -59,7 +58,15 @@ public class UserHandler {
 
 
     public Object logout(Request request, Response response) {
-        response.status(501); // Not implemented
-        return new Gson().toJson(new ErrorResponse("Error: logout not implemented"));
+        String authToken = request.headers("authorization");
+
+        LogoutResult result = service.logout(authToken);
+
+        response.status(result.statusCode());
+        if (result.success()) {
+            return new Gson().toJson(new Object());
+        } else {
+            return new Gson().toJson(result.errorMessage());
+        }
     }
 }

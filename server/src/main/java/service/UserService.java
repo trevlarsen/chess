@@ -1,14 +1,12 @@
 package service;
 
-import dataaccess.DataAccessException;
-import model.AuthData;
 import model.UserData;
 import model.reponses.ErrorResponse;
 import model.reponses.UserResponse;
 import model.requests.LoginRequest;
 import model.results.LoginResult;
+import model.results.LogoutResult;
 import model.results.UserResult;
-import org.eclipse.jetty.server.Authentication;
 
 import java.util.Objects;
 
@@ -34,7 +32,7 @@ public class UserService {
             userDataAccess.createUser(user);
             var auth = authDataAccess.newAuth(user.username());
             authDataAccess.createAuth(auth);
-            return new UserResult(true, 200, null, new UserResponse(user.username(), auth.authToken()));
+            return new UserResult(true, 200, new ErrorResponse("{}"), new UserResponse(user.username(), auth.authToken()));
 
         } catch (Exception e) {
             return new UserResult(false, 500, new ErrorResponse("Error: " + e.getMessage()), null);
@@ -56,18 +54,24 @@ public class UserService {
 
             var auth = authDataAccess.newAuth(loginRequest.username());
             authDataAccess.createAuth(auth);
-            return new LoginResult(true, 200, null, auth);
+            return new LoginResult(true, 200, new ErrorResponse("{}"), auth);
 
         } catch (Exception e) {
             return new LoginResult(false, 500, new ErrorResponse("Error: " + e.getMessage()), null);
         }
     }
 
-    public void logout() throws DataAccessException {
+    public LogoutResult logout(String authToken) {
         try {
-            var i = 9;
+            if (authToken == null || authDataAccess.getAuth(authToken) == null) {
+                return new LogoutResult(false, 401, new ErrorResponse("Error: unauthorized"));
+            }
+
+            authDataAccess.deleteAuth(authToken);
+            return new LogoutResult(true, 200, new ErrorResponse("{}"));
+
         } catch (Exception e) {
-            throw new DataAccessException("Error:" + e.getMessage());
+            return new LogoutResult(false, 500, new ErrorResponse("Error: " + e.getMessage()));
         }
     }
 }
