@@ -4,9 +4,7 @@ import model.UserData;
 import model.responses.ErrorResponse;
 import model.responses.RegisterResponse;
 import model.requests.LoginRequest;
-import model.results.LoginResult;
-import model.results.LogoutResult;
-import model.results.RegisterResult;
+import model.results.*;
 
 import java.util.Objects;
 
@@ -20,57 +18,56 @@ public class UserService {
     public RegisterResult register(UserData user) {
         try {
             if (user.username() == null || user.password() == null || user.email() == null) {
-                return new RegisterResult(false, 400, new ErrorResponse("Error: missing fields"), null);
+                return RegisterResult.error(400, ErrorResponse.missingFields());
             }
 
             UserData existingUser = userDataAccess.getUser(user.username());
             if (existingUser != null) {
-                return new RegisterResult(false, 403, new ErrorResponse("Error: username already taken"), null);
+                return RegisterResult.error(403, ErrorResponse.usernameTaken());
             }
 
             userDataAccess.createUser(user);
             var auth = authDataAccess.newAuth(user.username());
             authDataAccess.addAuth(auth);
-            return new RegisterResult(true, 200, new ErrorResponse("{}"), new RegisterResponse(user.username(), auth.authToken()));
+            return new RegisterResult(true, 200, ErrorResponse.empty(), new RegisterResponse(user.username(), auth.authToken()));
 
         } catch (Exception e) {
-            return new RegisterResult(false, 500, new ErrorResponse("Error: " + e.getMessage()), null);
+            return RegisterResult.error(500, ErrorResponse.internal(e.getMessage()));
         }
     }
-
 
     public LoginResult login(LoginRequest loginRequest) {
         try {
             if (loginRequest.username() == null || loginRequest.password() == null) {
-                return new LoginResult(false, 400, new ErrorResponse("Error: missing fields"), null);
+                return LoginResult.error(400, ErrorResponse.missingFields());
             }
 
             UserData existingUser = userDataAccess.getUser(loginRequest.username());
 
             if (existingUser == null || !Objects.equals(existingUser.password(), loginRequest.password())) {
-                return new LoginResult(false, 401, new ErrorResponse("Error: unauthorized"), null);
+                return LoginResult.error(401, ErrorResponse.unauthorized());
             }
 
             var auth = authDataAccess.newAuth(loginRequest.username());
             authDataAccess.addAuth(auth);
-            return new LoginResult(true, 200, new ErrorResponse("{}"), auth);
+            return new LoginResult(true, 200, ErrorResponse.empty(), auth);
 
         } catch (Exception e) {
-            return new LoginResult(false, 500, new ErrorResponse("Error: " + e.getMessage()), null);
+            return LoginResult.error(500, ErrorResponse.internal(e.getMessage()));
         }
     }
 
     public LogoutResult logout(String authToken) {
         try {
             if (authToken == null || authDataAccess.getAuth(authToken) == null) {
-                return new LogoutResult(false, 401, new ErrorResponse("Error: unauthorized"));
+                return LogoutResult.error(401, ErrorResponse.unauthorized());
             }
 
             authDataAccess.deleteAuth(authToken);
-            return new LogoutResult(true, 200, new ErrorResponse("{}"));
+            return new LogoutResult(true, 200, ErrorResponse.empty());
 
         } catch (Exception e) {
-            return new LogoutResult(false, 500, new ErrorResponse("Error: " + e.getMessage()));
+            return LogoutResult.error(500, ErrorResponse.internal(e.getMessage()));
         }
     }
 }

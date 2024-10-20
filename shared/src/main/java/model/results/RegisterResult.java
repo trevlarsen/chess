@@ -7,4 +7,8 @@ public record RegisterResult(boolean success,
                              int statusCode,
                              ErrorResponse errorMessage,
                              RegisterResponse registerResponse) {
+
+    public static RegisterResult error(int statusCode, ErrorResponse errorResponse) {
+        return new RegisterResult(false, statusCode, errorResponse, null);
+    }
 }
