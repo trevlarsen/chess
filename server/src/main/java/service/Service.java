@@ -7,9 +7,9 @@ import dataaccess.MemoryUserDOA;
 
 public class Service {
 
-    final static MemoryUserDOA userDataAccess = new MemoryUserDOA();
-    final static MemoryGameDOA gameDataAccess = new MemoryGameDOA();
-    final static MemoryAuthDOA authDataAccess = new MemoryAuthDOA();
+    public final static MemoryUserDOA userDataAccess = new MemoryUserDOA();
+    public final static MemoryGameDOA gameDataAccess = new MemoryGameDOA();
+    public final static MemoryAuthDOA authDataAccess = new MemoryAuthDOA();
 
     public Service() {
     }
