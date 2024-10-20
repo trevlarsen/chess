@@ -16,7 +16,7 @@ import static server.BaseHandler.handleResponse;
 public class UserHandler {
 
     private final UserService service = new UserService();
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
     private static volatile UserHandler instance;
 
     private UserHandler() {
@@ -46,7 +46,7 @@ public class UserHandler {
      * @return JSON response indicating success or failure
      */
     public Object register(Request request, Response response) {
-        UserData userRequest = gson.fromJson(request.body(), UserData.class);
+        UserData userRequest = GSON.fromJson(request.body(), UserData.class);
         RegisterResult result = service.register(userRequest);
         return handleResponse(response, result.statusCode(), result.success(), result.registerResponse(), result.errorMessage());
     }
@@ -59,7 +59,7 @@ public class UserHandler {
      * @return JSON response indicating success or failure
      */
     public Object login(Request request, Response response) {
-        LoginRequest loginRequest = gson.fromJson(request.body(), LoginRequest.class);
+        LoginRequest loginRequest = GSON.fromJson(request.body(), LoginRequest.class);
         LoginResult result = service.login(loginRequest);
         return handleResponse(response, result.statusCode(), result.success(), result.loginResponse(), result.errorMessage());
     }

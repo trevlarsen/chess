@@ -67,11 +67,11 @@ public class ChessGame {
             var captured = board.getPiece(endPos);
 
             // Determine if a piece will be captured
-            boolean pieceCaptured= captured != null;
+            boolean pieceCaptured = captured != null;
 
             // Make move
             board.addPiece(endPos, attacker);
-            board.pieces[startPosition.getRow()-1][startPosition.getColumn()-1] = null;
+            board.pieces[startPosition.getRow() - 1][startPosition.getColumn() - 1] = null;
 
             // See if it is valid
             if (!isInCheck(teamColor)) {
@@ -80,7 +80,7 @@ public class ChessGame {
 
             // Undo move
             board.addPiece(startPosition, attacker);
-            board.pieces[endPos.getRow()-1][endPos.getColumn()-1] = null;
+            board.pieces[endPos.getRow() - 1][endPos.getColumn() - 1] = null;
             if (pieceCaptured) {
                 board.addPiece(endPos, captured);
             }
@@ -99,7 +99,7 @@ public class ChessGame {
         var start = move.getStartPosition();
         var end = move.getEndPosition();
         var promotion = move.getPromotionPiece();
-        var attacker = board.pieces[start.getRow()-1][start.getColumn()-1];
+        var attacker = board.pieces[start.getRow() - 1][start.getColumn() - 1];
 
         // Check that it's the attackers turn and that the move is valid
         if (attacker == null) {
@@ -117,7 +117,7 @@ public class ChessGame {
 
         // Move the pieces
         board.addPiece(end, attacker);
-        board.pieces[start.getRow()-1][start.getColumn()-1] = null;
+        board.pieces[start.getRow() - 1][start.getColumn() - 1] = null;
 
         // Switch turns
         if (turn == TeamColor.WHITE) {
@@ -128,32 +128,56 @@ public class ChessGame {
     }
 
     /**
-     * Determines if the given team is in check
+     * Checks if the specified team is in check by looking for any attacking pieces that can reach the king.
      *
-     * @param teamColor which team to check for check
-     * @return True if the specified team is in check
+     * @param teamColor the color of the team to check for check status
+     * @return true if the team is in check; false otherwise
      */
     public boolean isInCheck(TeamColor teamColor) {
-        // Get king position
+        // Get the position of the king
         var kingPosition = getKingPosition(teamColor);
 
-        // Look at each position on the board
+        // Check each position on the board for enemy pieces
         for (int i = 0; i < board.pieces.length; i++) {
             for (int j = 0; j < board.pieces[i].length; j++) {
-                var current = board.pieces[i][j];
-                // If the current position contain an enemy piece, see if it can attack the king
-                if (current != null && current.getTeamColor() != teamColor) {
-                    var moves = current.pieceMoves(board, new ChessPosition(i+1, j+1));
-                    for (var move : moves) {
-                        // If any piece can reach the king, them the team is in check
-                        if (move.getEndPosition().equals(kingPosition)) {
-                            return true;
-                        }
+                var currentPiece = board.pieces[i][j];
+                if (isEnemyPiece(currentPiece, teamColor)) {
+                    if (canAttackKing(currentPiece, new ChessPosition(i + 1, j + 1), kingPosition)) {
+                        return true; // The king is in check
                     }
                 }
             }
         }
-        return false;
+        return false; // The king is not in check
+    }
+
+    /**
+     * Checks if the specified piece is an enemy piece.
+     *
+     * @param piece     the piece to check
+     * @param teamColor the color of the team to compare against
+     * @return true if the piece is an enemy piece; false otherwise
+     */
+    private boolean isEnemyPiece(ChessPiece piece, TeamColor teamColor) {
+        return piece != null && piece.getTeamColor() != teamColor;
+    }
+
+    /**
+     * Determines if the specified piece can attack the king at its position.
+     *
+     * @param piece         the attacking piece
+     * @param piecePosition the position of the attacking piece
+     * @param kingPosition  the position of the king
+     * @return true if the piece can attack the king; false otherwise
+     */
+    private boolean canAttackKing(ChessPiece piece, ChessPosition piecePosition, ChessPosition kingPosition) {
+        var moves = piece.pieceMoves(board, piecePosition);
+        for (var move : moves) {
+            if (move.getEndPosition().equals(kingPosition)) {
+                return true; // The piece can attack the king
+            }
+        }
+        return false; // The piece cannot attack the king
     }
 
     /**
@@ -231,8 +255,12 @@ public class ChessGame {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         ChessGame that = (ChessGame) o;
         return board.equals(that.board) && turn == that.turn;
     }

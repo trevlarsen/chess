@@ -14,9 +14,9 @@ public class BaseService {
     /**
      * Shared data access objects
      */
-    public final static MemoryUserDOA userDataAccess = new MemoryUserDOA();
-    public final static MemoryGameDOA gameDataAccess = new MemoryGameDOA();
-    public final static MemoryAuthDOA authDataAccess = new MemoryAuthDOA();
+    public final static MemoryUserDOA USER_DOA = new MemoryUserDOA();
+    public final static MemoryGameDOA GAME_DOA = new MemoryGameDOA();
+    public final static MemoryAuthDOA AUTH_DOA = new MemoryAuthDOA();
 
     public BaseService() {
     }
@@ -28,9 +28,9 @@ public class BaseService {
      */
     public void clear() throws DataAccessException {
         try {
-            userDataAccess.deleteAllUsers();
-            gameDataAccess.deleteAllGames();
-            authDataAccess.deleteAllAuths();
+            USER_DOA.deleteAllUsers();
+            GAME_DOA.deleteAllGames();
+            AUTH_DOA.deleteAllAuths();
         } catch (Exception e) {
             throw new DataAccessException("Error: description");
         }

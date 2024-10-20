@@ -16,7 +16,7 @@ import static server.BaseHandler.handleResponse;
 public class GameHandler {
 
     private final GameService service = new GameService();
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
     private static volatile GameHandler instance;
 
     private GameHandler() {
@@ -47,7 +47,7 @@ public class GameHandler {
      */
     public Object createGame(Request request, Response response) {
         String authToken = request.headers("authorization");
-        CreateGameRequest createGameRequest = gson.fromJson(request.body(), CreateGameRequest.class);
+        CreateGameRequest createGameRequest = GSON.fromJson(request.body(), CreateGameRequest.class);
         CreateGameResult result = service.createGame(authToken, createGameRequest.gameName());
         return handleResponse(response, result.statusCode(), result.success(), result.createGameResponse(), result.errorMessage());
     }
@@ -61,7 +61,7 @@ public class GameHandler {
      */
     public Object joinGame(Request request, Response response) {
         String authToken = request.headers("authorization");
-        JoinGameRequest joinGameRequest = gson.fromJson(request.body(), JoinGameRequest.class);
+        JoinGameRequest joinGameRequest = GSON.fromJson(request.body(), JoinGameRequest.class);
         JoinGameResult result = service.joinGame(authToken, joinGameRequest);
         return handleResponse(response, result.statusCode(), result.success(), new EmptyResponse(), result.errorMessage());
     }

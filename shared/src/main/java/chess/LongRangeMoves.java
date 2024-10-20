@@ -23,7 +23,11 @@ public class LongRangeMoves {
      * @param yDirections an array of y-directional vectors for movement
      * @return an {@code ArrayList} of {@code ChessMove} representing all possible long-range moves
      */
-    public static ArrayList<ChessMove> calculateMoves(ChessBoard board, ChessPosition position, ChessPiece piece, int[] xDirections, int[] yDirections) {
+    public static ArrayList<ChessMove> calculateMoves(ChessBoard board,
+                                                      ChessPosition position,
+                                                      ChessPiece piece,
+                                                      int[] xDirections,
+                                                      int[] yDirections) {
         var moves = new ArrayList<ChessMove>();
 
         // Cycle through each direction

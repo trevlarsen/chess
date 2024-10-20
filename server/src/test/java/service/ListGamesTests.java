@@ -1,11 +1,10 @@
-package passoff.server.service;
+package service;
 
-import chess.ChessGame;
 import dataaccess.DataAccessException;
 import dataaccess.MemoryGameDOA;
 import model.GameData;
 import model.UserData;
-import model.results.CreateGameResult;
+import model.results.ListGamesResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,12 +14,14 @@ import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class CreateGameTests {
+public class ListGamesTests {
     private final GameService gameService = new GameService();
     private final UserService userService = new UserService();
     private final BaseService baseService = new BaseService();
 
     private String trueToken;
+    private final String firstGame = "game1";
+    private final String secondGame = "game2";
 
     @BeforeEach
     public void registerUser() throws DataAccessException {
@@ -29,45 +30,47 @@ public class CreateGameTests {
         MemoryGameDOA.resetGameIDs();
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         trueToken = userService.register(goodUser).registerResponse().authToken();
+
+        gameService.createGame(trueToken, firstGame);
+        gameService.createGame(trueToken, secondGame);
     }
 
     @Test
-    @DisplayName("Create Game - Successful")
-    public void createGameSuccess() {
-        String gameName = "Chess";
-        CreateGameResult result = gameService.createGame(trueToken, gameName);
+    @DisplayName("List Games - Successful")
+    public void listGamesSuccess() {
+        ListGamesResult result = gameService.listGames(trueToken);
 
         assertTrue(result.success());
         assertEquals(200, result.statusCode());
         assertEquals("{}", result.errorMessage().message());
-        assertNotNull(result.createGameResponse());
-        assertEquals(1, result.createGameResponse().gameID());
+        assertNotNull(result.listGamesResponse());
 
-        assertTrue(MemoryGameDOA.gameDatabase.contains(new GameData(1, null, null, gameName, new ChessGame())));
+        var current = firstGame;
+        for (GameData game : result.listGamesResponse().games()) {
+            assertEquals(current, game.gameName());
+            current = secondGame;
+        }
     }
 
     @Test
-    @DisplayName("Create Game - Missing Auth Token")
-    public void createGameMissingAuthToken() {
-        String gameName = "Chess";
-        CreateGameResult result = gameService.createGame(null, gameName);
+    @DisplayName("List Games - Missing Auth Token")
+    public void listGamesMissingAuthToken() {
+        ListGamesResult result = gameService.listGames(null);
 
         assertFalse(result.success());
         assertEquals(400, result.statusCode());
         assertEquals("Error: missing fields", result.errorMessage().message());
-        assertNull(result.createGameResponse());
+        assertNull(result.listGamesResponse());
     }
 
     @Test
-    @DisplayName("Create Game - Unauthorized")
-    public void createGameUnauthorized() {
-        String authToken = "invalid-token";
-        String gameName = "Chess";
-        CreateGameResult result = gameService.createGame(authToken, gameName);
+    @DisplayName("List Games - Unauthorized")
+    public void listGamesUnauthorized() {
+        ListGamesResult result = gameService.listGames("invalid-token");
 
         assertFalse(result.success());
         assertEquals(401, result.statusCode());
         assertEquals("Error: unauthorized", result.errorMessage().message());
-        assertNull(result.createGameResponse());
+        assertNull(result.listGamesResponse());
     }
 }

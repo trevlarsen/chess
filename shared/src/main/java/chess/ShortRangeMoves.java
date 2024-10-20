@@ -22,7 +22,11 @@ public class ShortRangeMoves {
      * @param yDirections an array of y-directional vectors for movement
      * @return an {@code ArrayList} of {@code ChessMove} representing all possible short-range moves
      */
-    public static ArrayList<ChessMove> calculateMoves(ChessBoard board, ChessPosition position, ChessPiece piece, int[] xDirections, int[] yDirections) {
+    public static ArrayList<ChessMove> calculateMoves(ChessBoard board,
+                                                      ChessPosition position,
+                                                      ChessPiece piece,
+                                                      int[] xDirections,
+                                                      int[] yDirections) {
         var moves = new ArrayList<ChessMove>();
 
         // Iterate through each direction to calculate possible moves

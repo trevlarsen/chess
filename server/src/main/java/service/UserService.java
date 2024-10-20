@@ -30,14 +30,14 @@ public class UserService {
                 return RegisterResult.error(400, ErrorResponse.missingFields());
             }
 
-            UserData existingUser = userDataAccess.getUser(user.username());
+            UserData existingUser = USER_DOA.getUser(user.username());
             if (existingUser != null) {
                 return RegisterResult.error(403, ErrorResponse.usernameTaken());
             }
 
-            userDataAccess.createUser(user);
-            var auth = authDataAccess.newAuth(user.username());
-            authDataAccess.addAuth(auth);
+            USER_DOA.createUser(user);
+            var auth = AUTH_DOA.newAuth(user.username());
+            AUTH_DOA.addAuth(auth);
             return new RegisterResult(true, 200, ErrorResponse.empty(), new RegisterResponse(user.username(), auth.authToken()));
 
         } catch (Exception e) {
@@ -57,14 +57,14 @@ public class UserService {
                 return LoginResult.error(400, ErrorResponse.missingFields());
             }
 
-            UserData existingUser = userDataAccess.getUser(loginRequest.username());
+            UserData existingUser = USER_DOA.getUser(loginRequest.username());
 
             if (existingUser == null || !Objects.equals(existingUser.password(), loginRequest.password())) {
                 return LoginResult.error(401, ErrorResponse.unauthorized());
             }
 
-            var auth = authDataAccess.newAuth(loginRequest.username());
-            authDataAccess.addAuth(auth);
+            var auth = AUTH_DOA.newAuth(loginRequest.username());
+            AUTH_DOA.addAuth(auth);
             return new LoginResult(true, 200, ErrorResponse.empty(), auth);
 
         } catch (Exception e) {
@@ -87,7 +87,7 @@ public class UserService {
                 return LogoutResult.error(401, ErrorResponse.unauthorized());
             }
 
-            authDataAccess.deleteAuth(authToken);
+            AUTH_DOA.deleteAuth(authToken);
             return new LogoutResult(true, 200, ErrorResponse.empty());
 
         } catch (Exception e) {

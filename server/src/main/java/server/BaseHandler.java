@@ -10,7 +10,7 @@ public class BaseHandler {
 
     private final BaseService baseService = new BaseService();
     private static volatile BaseHandler instance;
-    private static final Gson gson = new Gson();
+    private static final Gson GSON = new Gson();
 
     private BaseHandler() {
     }
@@ -58,6 +58,6 @@ public class BaseHandler {
      */
     public static Object handleResponse(Response response, int statusCode, boolean success, Object successResponse, Object errorMessage) {
         response.status(statusCode);
-        return gson.toJson(success ? successResponse : errorMessage);
+        return GSON.toJson(success ? successResponse : errorMessage);
     }
 }

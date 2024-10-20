@@ -2,7 +2,7 @@ package service;
 
 import java.lang.reflect.Field;
 
-import static service.BaseService.authDataAccess;
+import static service.BaseService.AUTH_DOA;
 
 /**
  * A utility service responsible for validating inputs and checking authorization.
@@ -21,7 +21,9 @@ public class ValidationService {
      */
     public static boolean inputIsInvalid(Object... inputs) throws IllegalAccessException {
         for (Object input : inputs) {
-            if (input == null) return true;
+            if (input == null) {
+                return true;
+            }
 
             if (input instanceof String) {
                 if (((String) input).isEmpty()) {
@@ -54,6 +56,6 @@ public class ValidationService {
      * @return {@code true} if the token is unauthorized (not found), {@code false} otherwise.
      */
     public static boolean isUnauthorized(String authToken) {
-        return authDataAccess.getAuth(authToken) == null;
+        return AUTH_DOA.getAuth(authToken) == null;
     }
 }
