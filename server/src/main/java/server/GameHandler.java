@@ -11,61 +11,72 @@ import service.GameService;
 import spark.Request;
 import spark.Response;
 
+import static server.BaseHandler.handleResponse;
+
 public class GameHandler {
 
     private final GameService service = new GameService();
+    private static final Gson gson = new Gson();
+    private static volatile GameHandler instance;
 
-    private static GameHandler instance;
-
-    public GameHandler() {
+    private GameHandler() {
     }
 
+    /**
+     * Provides a singleton instance of GameHandler.
+     *
+     * @return the single instance of GameHandler
+     */
     public static GameHandler getInstance() {
         if (instance == null) {
-            instance = new GameHandler(); // Ensure the instance is assigned here
+            synchronized (GameHandler.class) {
+                if (instance == null) {
+                    instance = new GameHandler();
+                }
+            }
         }
         return instance;
     }
 
+    /**
+     * Handles the creation of a new game.
+     *
+     * @param request  the HTTP request containing game data
+     * @param response the HTTP response object
+     * @return JSON response indicating success or failure
+     */
     public Object createGame(Request request, Response response) {
         String authToken = request.headers("authorization");
-        CreateGameRequest createGameRequest = new Gson().fromJson(request.body(), CreateGameRequest.class);
-
+        CreateGameRequest createGameRequest = gson.fromJson(request.body(), CreateGameRequest.class);
         CreateGameResult result = service.createGame(authToken, createGameRequest.gameName());
-
-        response.status(result.statusCode());
-        if (result.success()) {
-            return new Gson().toJson(result.createGameResponse());
-        } else {
-            return new Gson().toJson(result.errorMessage());
-        }
+        return handleResponse(response, result.statusCode(), result.success(), result.createGameResponse(), result.errorMessage());
     }
 
+    /**
+     * Handles user requests to join a game.
+     *
+     * @param request  the HTTP request containing join game data
+     * @param response the HTTP response object
+     * @return JSON response indicating success or failure
+     */
     public Object joinGame(Request request, Response response) {
         String authToken = request.headers("authorization");
-        JoinGameRequest joinGameRequest = new Gson().fromJson(request.body(), JoinGameRequest.class);
-
+        JoinGameRequest joinGameRequest = gson.fromJson(request.body(), JoinGameRequest.class);
         JoinGameResult result = service.joinGame(authToken, joinGameRequest);
-
-        response.status(result.statusCode());
-        if (result.success()) {
-            return new Gson().toJson(new EmptyResponse());
-        } else {
-            return new Gson().toJson(result.errorMessage());
-        }
+        return handleResponse(response, result.statusCode(), result.success(), new EmptyResponse(), result.errorMessage());
     }
 
+    /**
+     * Handles requests to list all available games.
+     *
+     * @param request  the HTTP request
+     * @param response the HTTP response object
+     * @return JSON response indicating success or failure
+     */
     public Object listGames(Request request, Response response) {
         String authToken = request.headers("authorization");
-
         ListGamesResult result = service.listGames(authToken);
-
-        response.status(result.statusCode());
-        if (result.success()) {
-            return new Gson().toJson(result.listGamesResponse());
-        } else {
-            return new Gson().toJson(result.errorMessage());
-        }
+        return handleResponse(response, result.statusCode(), result.success(), result.listGamesResponse(), result.errorMessage());
     }
 
 }

@@ -11,62 +11,69 @@ import service.UserService;
 import spark.Request;
 import spark.Response;
 
+import static server.BaseHandler.handleResponse;
+
 public class UserHandler {
 
     private final UserService service = new UserService();
-    private static UserHandler instance;
+    private static final Gson gson = new Gson();
+    private static volatile UserHandler instance;
 
-
-    public UserHandler() {
+    private UserHandler() {
     }
 
-
+    /**
+     * Provides a singleton instance of UserHandler.
+     *
+     * @return the single instance of UserHandler
+     */
     public static UserHandler getInstance() {
         if (instance == null) {
-            instance = new UserHandler(); // Ensure the instance is assigned here
+            synchronized (UserHandler.class) {
+                if (instance == null) {
+                    instance = new UserHandler();
+                }
+            }
         }
         return instance;
     }
 
-
+    /**
+     * Handles the registration of a new user.
+     *
+     * @param request  the HTTP request containing user data
+     * @param response the HTTP response object
+     * @return JSON response indicating success or failure
+     */
     public Object register(Request request, Response response) {
-        UserData userRequest = new Gson().fromJson(request.body(), UserData.class);
-
+        UserData userRequest = gson.fromJson(request.body(), UserData.class);
         RegisterResult result = service.register(userRequest);
-
-        response.status(result.statusCode());
-        if (result.success()) {
-            return new Gson().toJson(result.registerResponse());
-        } else {
-            return new Gson().toJson(result.errorMessage());
-        }
+        return handleResponse(response, result.statusCode(), result.success(), result.registerResponse(), result.errorMessage());
     }
 
-
+    /**
+     * Handles user login requests.
+     *
+     * @param request  the HTTP request containing login credentials
+     * @param response the HTTP response object
+     * @return JSON response indicating success or failure
+     */
     public Object login(Request request, Response response) {
-        LoginRequest loginRequest = new Gson().fromJson(request.body(), LoginRequest.class);
-
+        LoginRequest loginRequest = gson.fromJson(request.body(), LoginRequest.class);
         LoginResult result = service.login(loginRequest);
-
-        response.status(result.statusCode());
-        if (result.success()) {
-            return new Gson().toJson(result.loginResponse());
-        } else {
-            return new Gson().toJson(result.errorMessage());
-        }
+        return handleResponse(response, result.statusCode(), result.success(), result.loginResponse(), result.errorMessage());
     }
 
-
+    /**
+     * Handles user logout requests.
+     *
+     * @param request  the HTTP request containing the authorization token
+     * @param response the HTTP response object
+     * @return JSON response indicating success or failure
+     */
     public Object logout(Request request, Response response) {
         String authToken = request.headers("authorization");
-
         LogoutResult result = service.logout(authToken);
-
-        response.status(result.statusCode());
-        if (result.success()) {
-            return new Gson().toJson(new EmptyResponse());
-        } else {
-            return new Gson().toJson(result.errorMessage());
-        }
+        return handleResponse(response, result.statusCode(), result.success(), new EmptyResponse(), result.errorMessage());
     }
 }

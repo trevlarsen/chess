@@ -9,27 +9,55 @@ import spark.Response;
 public class BaseHandler {
 
     private final BaseService baseService = new BaseService();
+    private static volatile BaseHandler instance;
+    private static final Gson gson = new Gson();
 
-    private static BaseHandler instance;
-
-    public BaseHandler() {
+    private BaseHandler() {
     }
 
+    /**
+     * Provides a singleton instance of BaseHandler.
+     *
+     * @return the single instance of BaseHandler
+     */
     public static BaseHandler getInstance() {
         if (instance == null) {
-            instance = new BaseHandler();
+            synchronized (BaseHandler.class) {
+                if (instance == null) {
+                    instance = new BaseHandler();
+                }
+            }
         }
         return instance;
     }
 
+    /**
+     * Clears all data from the base service.
+     *
+     * @param response the HTTP response object
+     * @return JSON response indicating the outcome of the clear operation
+     */
     public Object clear(Response response) {
         try {
             baseService.clear();
-            response.status(200);
-            return new Gson().toJson(new EmptyResponse());
+            return handleResponse(response, 200, true, new EmptyResponse(), null);
         } catch (Exception e) {
-            response.status(500);
-            return new Gson().toJson(new ErrorResponse("Error: " + e.getMessage()));
+            return handleResponse(response, 500, false, null, new ErrorResponse("Error: " + e.getMessage()));
         }
+    }
+
+    /**
+     * Handles the response based on the success or failure of an operation.
+     *
+     * @param response        the HTTP response object
+     * @param statusCode      the HTTP status code
+     * @param success         boolean indicating success or failure
+     * @param successResponse the response object for success
+     * @param errorMessage    the response object for error
+     * @return JSON response
+     */
+    public static Object handleResponse(Response response, int statusCode, boolean success, Object successResponse, Object errorMessage) {
+        response.status(statusCode);
+        return gson.toJson(success ? successResponse : errorMessage);
     }
 }

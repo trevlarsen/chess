@@ -11,6 +11,9 @@ import model.results.ListGamesResult;
 
 import static service.BaseService.*;
 
+/**
+ * Provides game-related operations such as the creation, joining, and listing of games.
+ */
 public class GameService {
 
     public GameService() {
@@ -21,7 +24,7 @@ public class GameService {
      *
      * @param authToken the token used to authenticate the user
      * @param gameName  the name of the game to be created
-     * @return a {@link CreateGameResult} containing the status of the operation
+     * @return a {@link CreateGameResult} containing the status of the creation
      */
     public CreateGameResult createGame(String authToken, String gameName) {
         try {

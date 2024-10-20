@@ -10,11 +10,20 @@ import java.util.Objects;
 
 import static service.BaseService.*;
 
+/**
+ * Provides user-related operations such as registration, login, and logout.
+ */
 public class UserService {
 
     public UserService() {
     }
 
+    /**
+     * Registers a new user with the provided user data.
+     *
+     * @param user A {@link UserData} object containing the user's information.
+     * @return A {@link RegisterResult} representing the outcome of the registration.
+     */
     public RegisterResult register(UserData user) {
         try {
             if (ValidationService.inputIsInvalid(user)) {
@@ -36,6 +45,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Logs in a user by verifying the provided credentials.
+     *
+     * @param loginRequest A {@link LoginRequest} containing the user's username and password.
+     * @return A {@link LoginResult} representing the outcome of the login.
+     */
     public LoginResult login(LoginRequest loginRequest) {
         try {
             if (ValidationService.inputIsInvalid(loginRequest)) {
@@ -57,6 +72,12 @@ public class UserService {
         }
     }
 
+    /**
+     * Logs out a user by deleting the associated authentication token.
+     *
+     * @param authToken The token used to authenticate the user.
+     * @return A {@link LogoutResult} representing the outcome of the logout.
+     */
     public LogoutResult logout(String authToken) {
         try {
             if (ValidationService.inputIsInvalid(authToken)) {

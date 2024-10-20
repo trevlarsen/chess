@@ -4,6 +4,9 @@ import java.lang.reflect.Field;
 
 import static service.BaseService.authDataAccess;
 
+/**
+ * A utility service responsible for validating inputs and checking authorization.
+ */
 public class ValidationService {
 
     /**
@@ -12,8 +15,8 @@ public class ValidationService {
      * to access the fields of each input object.
      *
      * @param inputs Varargs of objects to be validated.
-     * @return true if all input objects and their fields are valid (not
-     * null and not empty); false if any input object is null,
+     * @return {@code true} if all input objects and their fields are valid (not
+     * null and not empty); {@code false} if any input object is null,
      * or if any field in the objects is null or an empty string.
      */
     public static boolean inputIsInvalid(Object... inputs) throws IllegalAccessException {
@@ -44,6 +47,12 @@ public class ValidationService {
         return false;
     }
 
+    /**
+     * Checks if the provided authentication token is valid.
+     *
+     * @param authToken The authentication token to validate.
+     * @return {@code true} if the token is unauthorized (not found), {@code false} otherwise.
+     */
     public static boolean isUnauthorized(String authToken) {
         return authDataAccess.getAuth(authToken) == null;
     }
