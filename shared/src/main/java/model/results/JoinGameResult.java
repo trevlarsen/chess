@@ -1,7 +1,6 @@
 package model.results;
 
-import model.reponses.CreateGameResponse;
-import model.reponses.ErrorResponse;
+import model.responses.ErrorResponse;
 
 public record JoinGameResult(boolean success,
                              int statusCode,

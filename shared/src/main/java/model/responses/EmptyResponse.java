@@ -1,4 +1,4 @@
-package model.reponses;
+package model.responses;
 
 public record EmptyResponse() {
 }

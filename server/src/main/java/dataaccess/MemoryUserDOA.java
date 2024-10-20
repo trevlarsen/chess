@@ -6,7 +6,7 @@ import java.util.ArrayList;
 
 public class MemoryUserDOA implements UserDOAInterface {
 
-    private static ArrayList<UserData> userDatabase = new ArrayList<>();
+    public static ArrayList<UserData> userDatabase = new ArrayList<>();
 
 
     public MemoryUserDOA() {

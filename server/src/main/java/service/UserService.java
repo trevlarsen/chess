@@ -1,8 +1,8 @@
 package service;
 
 import model.UserData;
-import model.reponses.ErrorResponse;
-import model.reponses.RegisterResponse;
+import model.responses.ErrorResponse;
+import model.responses.RegisterResponse;
 import model.requests.LoginRequest;
 import model.results.LoginResult;
 import model.results.LogoutResult;

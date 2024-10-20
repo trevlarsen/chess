@@ -1,9 +1,9 @@
 package service;
 
 import model.GameData;
-import model.reponses.CreateGameResponse;
-import model.reponses.ErrorResponse;
-import model.reponses.ListGamesResponse;
+import model.responses.CreateGameResponse;
+import model.responses.ErrorResponse;
+import model.responses.ListGamesResponse;
 import model.requests.JoinGameRequest;
 import model.results.CreateGameResult;
 import model.results.JoinGameResult;
@@ -61,7 +61,7 @@ public class GameService {
                 return new JoinGameResult(false, 403, new ErrorResponse("Error: player color already taken"));
             }
 
-            return new JoinGameResult(true, 200, new ErrorResponse("Error: player color already taken"));
+            return new JoinGameResult(true, 200, new ErrorResponse("{}"));
 
         } catch (Exception e) {
             return new JoinGameResult(false, 500, new ErrorResponse("Error: " + e.getMessage()));

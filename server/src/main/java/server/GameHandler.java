@@ -1,7 +1,7 @@
 package server;
 
 import com.google.gson.Gson;
-import model.reponses.EmptyResponse;
+import model.responses.EmptyResponse;
 import model.requests.CreateGameRequest;
 import model.requests.JoinGameRequest;
 import model.results.CreateGameResult;

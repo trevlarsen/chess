@@ -1,6 +1,7 @@
 package passoff.server.service;
 
 import dataaccess.DataAccessException;
+import dataaccess.MemoryUserDOA;
 import model.UserData;
 import model.results.RegisterResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,6 @@ public class RegisterTests {
     private final UserService userService = new UserService();
     private final Service service = new Service();
 
-
     @BeforeEach
     public void clear() throws DataAccessException {
         service.clear();
@@ -25,7 +25,6 @@ public class RegisterTests {
     @DisplayName("Register - Successful")
     public void registerSuccess() {
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
-
         RegisterResult result = userService.register(goodUser);
 
         assertTrue(result.success());
@@ -33,6 +32,8 @@ public class RegisterTests {
         assertEquals("{}", result.errorMessage().message());
         assertNotNull(result.registerResponse());
         assertEquals(goodUser.username(), result.registerResponse().username());
+
+        assertTrue(MemoryUserDOA.userDatabase.contains(goodUser));
     }
 
     @Test
@@ -42,7 +43,6 @@ public class RegisterTests {
         userService.register(goodUser);
 
         UserData existingUser = new UserData("Trevor", "mypass", "mymail.com");
-
         RegisterResult result = userService.register(existingUser);
 
         assertFalse(result.success());
@@ -55,7 +55,6 @@ public class RegisterTests {
     @DisplayName("Register - Missing Username")
     public void registerMissingUsername() {
         UserData noUsernameUser = new UserData(null, "mypass", "mymail.com");
-
         RegisterResult result = userService.register(noUsernameUser);
 
         assertFalse(result.success());

@@ -1,7 +1,7 @@
 package model.results;
 
-import model.reponses.ErrorResponse;
-import model.reponses.RegisterResponse;
+import model.responses.ErrorResponse;
+import model.responses.RegisterResponse;
 
 public record RegisterResult(boolean success,
                              int statusCode,

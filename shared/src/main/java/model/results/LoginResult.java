@@ -1,7 +1,7 @@
 package model.results;
 
 import model.AuthData;
-import model.reponses.ErrorResponse;
+import model.responses.ErrorResponse;
 
 public record LoginResult(boolean success,
                           int statusCode,

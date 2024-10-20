@@ -1,7 +1,7 @@
 package model.results;
 
-import model.reponses.CreateGameResponse;
-import model.reponses.ErrorResponse;
+import model.responses.CreateGameResponse;
+import model.responses.ErrorResponse;
 
 public record CreateGameResult(boolean success,
                                int statusCode,

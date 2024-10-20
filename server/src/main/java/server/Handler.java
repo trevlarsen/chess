@@ -1,8 +1,8 @@
 package server;
 
 import com.google.gson.Gson;
-import model.reponses.EmptyResponse;
-import model.reponses.ErrorResponse;
+import model.responses.EmptyResponse;
+import model.responses.ErrorResponse;
 import service.Service;
 import spark.Response;
 

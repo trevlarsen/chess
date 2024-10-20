@@ -2,7 +2,7 @@ package server;
 
 import com.google.gson.Gson;
 import model.UserData;
-import model.reponses.EmptyResponse;
+import model.responses.EmptyResponse;
 import model.requests.LoginRequest;
 import model.results.LoginResult;
 import model.results.LogoutResult;

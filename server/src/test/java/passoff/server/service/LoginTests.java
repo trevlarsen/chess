@@ -1,6 +1,7 @@
 package passoff.server.service;
 
 import dataaccess.DataAccessException;
+import dataaccess.MemoryAuthDOA;
 import model.UserData;
 import model.requests.LoginRequest;
 import model.results.LoginResult;
@@ -16,10 +17,10 @@ public class LoginTests {
     private final UserService userService = new UserService();
     private final Service service = new Service();
 
-
     @BeforeEach
     public void registerUser() throws DataAccessException {
         service.clear();
+
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         userService.register(goodUser);
     }
@@ -34,8 +35,9 @@ public class LoginTests {
         assertEquals(200, result.statusCode());
         assertEquals("{}", result.errorMessage().message());
         assertNotNull(result.loginResponse());
-    }
 
+        assertTrue(MemoryAuthDOA.authDatabase.contains(result.loginResponse()));
+    }
 
     @Test
     @DisplayName("Login - Missing Username")
@@ -49,7 +51,6 @@ public class LoginTests {
         assertNull(result.loginResponse());
     }
 
-
     @Test
     @DisplayName("Login - Unauthorized")
     public void loginUnauthorized() {
@@ -61,5 +62,4 @@ public class LoginTests {
         assertEquals("Error: unauthorized", result.errorMessage().message());
         assertNull(result.loginResponse());
     }
-
 }

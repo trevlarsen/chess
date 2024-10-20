@@ -7,12 +7,11 @@ import java.util.ArrayList;
 
 public class MemoryGameDOA implements GameDOAInterface {
 
-    private static ArrayList<GameData> gameDatabase = new ArrayList<>();
-    private int nextGameID = 1;
+    public static ArrayList<GameData> gameDatabase = new ArrayList<>();
+    private static int nextGameID = 1;
 
     public MemoryGameDOA() {
     }
-
 
     @Override
     public GameData newGame(String gameName) {
@@ -67,5 +66,9 @@ public class MemoryGameDOA implements GameDOAInterface {
     @Override
     public void deleteAllGames() {
         gameDatabase.clear();
+    }
+
+    public static void resetGameIDs() {
+        nextGameID = 1;
     }
 }

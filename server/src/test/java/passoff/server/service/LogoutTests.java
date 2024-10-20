@@ -1,6 +1,8 @@
 package passoff.server.service;
 
 import dataaccess.DataAccessException;
+import dataaccess.MemoryAuthDOA;
+import model.AuthData;
 import model.UserData;
 import model.results.LogoutResult;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,7 +13,6 @@ import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-
 public class LogoutTests {
     private final UserService userService = new UserService();
     private final Service service = new Service();
@@ -20,6 +21,7 @@ public class LogoutTests {
     @BeforeEach
     public void registerUser() throws DataAccessException {
         service.clear();
+
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         trueToken = userService.register(goodUser).registerResponse().authToken();
     }
@@ -32,13 +34,14 @@ public class LogoutTests {
         assertTrue(result.success());
         assertEquals(200, result.statusCode());
         assertEquals("{}", result.errorMessage().message());
+
+        assertFalse(MemoryAuthDOA.authDatabase.contains(new AuthData(trueToken, "Trevor")));
     }
 
     @Test
     @DisplayName("Logout - Unauthorized")
     public void logoutUnauthorized() {
         String authToken = "invalid-token";
-
         LogoutResult result = userService.logout(authToken);
 
         assertFalse(result.success());
