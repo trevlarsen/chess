@@ -12,7 +12,7 @@ import java.util.Objects;
  */
 public class ChessPiece {
 
-    private ChessGame.TeamColor color;
+    private final ChessGame.TeamColor color;
     private PieceType pieceType;
 
     public ChessPiece(ChessGame.TeamColor pieceColor, ChessPiece.PieceType type) {
@@ -35,7 +35,7 @@ public class ChessPiece {
     /**
      * @return Which team this chess piece belongs to
      */
-    public ChessGame.TeamColor getTeamColor(){
+    public ChessGame.TeamColor getTeamColor() {
         return color;
     }
 
@@ -65,7 +65,6 @@ public class ChessPiece {
             case KNIGHT -> KnightMoves.calculateMoves(board, myPosition, this);
             case ROOK -> RookMoves.calculateMoves(board, myPosition, this);
             case PAWN -> PawnMoves.calculateMoves(board, myPosition, this);
-            default -> new ArrayList<ChessMove>();
         };
     }
 
