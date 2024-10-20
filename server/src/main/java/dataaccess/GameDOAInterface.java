@@ -5,16 +5,55 @@ import model.GameData;
 
 import java.util.ArrayList;
 
+/**
+ * Interface for managing game data access operations.
+ * Implementations of this interface are responsible for creating,
+ * retrieving, updating, and deleting game records.
+ */
 public interface GameDOAInterface {
+
+    /**
+     * Creates a new game with the given name.
+     *
+     * @param gameName the name of the new game
+     * @return a {@link GameData} object containing the newly created game information
+     */
     GameData newGame(String gameName);
 
-    void addGame(GameData gameData); // Adds a game to the database
+    /**
+     * Adds the given game data to the data store.
+     *
+     * @param gameData the {@link GameData} object to be added
+     */
+    void addGame(GameData gameData);
 
-    GameData getGame(int gameID); // Find and return a game based on a gameID
+    /**
+     * Retrieves the game associated with the specified game ID.
+     *
+     * @param gameID the unique identifier of the game to retrieve
+     * @return the {@link GameData} if the game is found, or {@code null} if not found
+     */
+    GameData getGame(int gameID);
 
-    ArrayList<GameData> getAllGames(); // Returns a list of all games in the database
+    /**
+     * Retrieves a list of all games currently stored.
+     *
+     * @return an {@link ArrayList} of {@link GameData} objects representing all games
+     */
+    ArrayList<GameData> getAllGames();
 
-    boolean joinGame(String username, ChessGame.TeamColor playerColor, int gameID); // Add a user by username to a game using the gameID and player color
+    /**
+     * Attempts to join a game with the specified player color and game ID.
+     *
+     * @param username    the username of the player attempting to join
+     * @param playerColor the color of the team the player wishes to join, from {@link ChessGame.TeamColor}
+     * @param gameID      the ID of the game the player is trying to join
+     * @return {@code true} if the player successfully joined, {@code false} if the color is already taken
+     */
+    boolean joinGame(String username, ChessGame.TeamColor playerColor, int gameID);
 
-    void deleteAllGames(); // Deletes every game in the database
+    /**
+     * Deletes all games from the data store.
+     */
+    void deleteAllGames();
 }

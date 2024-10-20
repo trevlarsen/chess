@@ -12,20 +12,17 @@ public class MemoryAuthDOA implements AuthDOAInterface {
     public MemoryAuthDOA() {
     }
 
-
     @Override
     public AuthData newAuth(String username) {
         String authToken = UUID.randomUUID().toString();
         return new AuthData(authToken, username);
     }
 
-    // Adds an AuthData to the database
     @Override
     public void addAuth(AuthData authData) {
         authDatabase.add(authData);
     }
 
-    // Find and return AuthData based on an auth token
     @Override
     public AuthData getAuth(String authToken) {
         for (var auth : authDatabase) {
@@ -36,14 +33,11 @@ public class MemoryAuthDOA implements AuthDOAInterface {
         return null;
     }
 
-    // Deletes a AuthData given an auth token
     @Override
     public void deleteAuth(String authToken) {
         authDatabase.removeIf(auth -> auth.authToken().equals(authToken));
-
     }
 
-    // Deletes every AuthData in the database
     @Override
     public void deleteAllAuths() {
         authDatabase.clear();

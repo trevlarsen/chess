@@ -12,14 +12,11 @@ public class MemoryUserDOA implements UserDOAInterface {
     public MemoryUserDOA() {
     }
 
-
-    // Adds a user to the database
     @Override
     public void createUser(UserData userData) {
         userDatabase.add(userData);
     }
 
-    // Find and return UserData based on username, null if it doesn't exist
     @Override
     public UserData getUser(String username) {
         for (var user : userDatabase) {
@@ -30,7 +27,6 @@ public class MemoryUserDOA implements UserDOAInterface {
         return null;
     }
 
-    // Deletes every user in the database
     @Override
     public void deleteAllUsers() {
         userDatabase.clear();
