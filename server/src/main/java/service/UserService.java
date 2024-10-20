@@ -8,7 +8,7 @@ import model.results.*;
 
 import java.util.Objects;
 
-import static service.Service.*;
+import static service.BaseService.*;
 
 public class UserService {
 
@@ -17,7 +17,7 @@ public class UserService {
 
     public RegisterResult register(UserData user) {
         try {
-            if (user.username() == null || user.password() == null || user.email() == null) {
+            if (ValidationService.inputIsInvalid(user)) {
                 return RegisterResult.error(400, ErrorResponse.missingFields());
             }
 
@@ -38,7 +38,7 @@ public class UserService {
 
     public LoginResult login(LoginRequest loginRequest) {
         try {
-            if (loginRequest.username() == null || loginRequest.password() == null) {
+            if (ValidationService.inputIsInvalid(loginRequest)) {
                 return LoginResult.error(400, ErrorResponse.missingFields());
             }
 
@@ -59,7 +59,10 @@ public class UserService {
 
     public LogoutResult logout(String authToken) {
         try {
-            if (authToken == null || authDataAccess.getAuth(authToken) == null) {
+            if (ValidationService.inputIsInvalid(authToken)) {
+                return LogoutResult.error(400, ErrorResponse.missingFields());
+            }
+            if (ValidationService.isUnauthorized(authToken)) {
                 return LogoutResult.error(401, ErrorResponse.unauthorized());
             }
 

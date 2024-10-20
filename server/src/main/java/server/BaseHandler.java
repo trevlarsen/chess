@@ -3,28 +3,28 @@ package server;
 import com.google.gson.Gson;
 import model.responses.EmptyResponse;
 import model.responses.ErrorResponse;
-import service.Service;
+import service.BaseService;
 import spark.Response;
 
-public class Handler {
+public class BaseHandler {
 
-    private final Service service = new Service();
+    private final BaseService baseService = new BaseService();
 
-    private static Handler instance;
+    private static BaseHandler instance;
 
-    public Handler() {
+    public BaseHandler() {
     }
 
-    public static Handler getInstance() {
+    public static BaseHandler getInstance() {
         if (instance == null) {
-            instance = new Handler();
+            instance = new BaseHandler();
         }
         return instance;
     }
 
     public Object clear(Response response) {
         try {
-            service.clear();
+            baseService.clear();
             response.status(200);
             return new Gson().toJson(new EmptyResponse());
         } catch (Exception e) {

@@ -9,7 +9,7 @@ import model.results.CreateGameResult;
 import model.results.JoinGameResult;
 import model.results.ListGamesResult;
 
-import static service.Service.*;
+import static service.BaseService.*;
 
 public class GameService {
 
@@ -25,11 +25,11 @@ public class GameService {
      */
     public CreateGameResult createGame(String authToken, String gameName) {
         try {
-            if (authToken == null || gameName == null) {
+            if (ValidationService.inputIsInvalid(authToken, gameName)) {
                 return CreateGameResult.error(400, ErrorResponse.missingFields());
             }
 
-            if (authDataAccess.getAuth(authToken) == null) {
+            if (ValidationService.isUnauthorized(authToken)) {
                 return CreateGameResult.error(401, ErrorResponse.unauthorized());
             }
 
@@ -51,11 +51,11 @@ public class GameService {
      */
     public JoinGameResult joinGame(String authToken, JoinGameRequest joinGameRequest) {
         try {
-            if (authToken == null || joinGameRequest == null || joinGameRequest.playerColor() == null || joinGameRequest.gameID() == null) {
+            if (ValidationService.inputIsInvalid(authToken, joinGameRequest)) {
                 return JoinGameResult.error(400, ErrorResponse.missingFields());
             }
 
-            if (authDataAccess.getAuth(authToken) == null) {
+            if (ValidationService.isUnauthorized(authToken)) {
                 return JoinGameResult.error(401, ErrorResponse.unauthorized());
             }
 
@@ -88,11 +88,11 @@ public class GameService {
      */
     public ListGamesResult listGames(String authToken) {
         try {
-            if (authToken == null) {
+            if (ValidationService.inputIsInvalid(authToken)) {
                 return ListGamesResult.error(400, ErrorResponse.missingFields());
             }
 
-            if (authDataAccess.getAuth(authToken) == null) {
+            if (ValidationService.isUnauthorized(authToken)) {
                 return ListGamesResult.error(401, ErrorResponse.unauthorized());
             }
 

@@ -8,19 +8,19 @@ import model.results.LogoutResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.Service;
+import service.BaseService;
 import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LogoutTests {
     private final UserService userService = new UserService();
-    private final Service service = new Service();
+    private final BaseService baseService = new BaseService();
     private String trueToken;
 
     @BeforeEach
     public void registerUser() throws DataAccessException {
-        service.clear();
+        baseService.clear();
 
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         trueToken = userService.register(goodUser).registerResponse().authToken();
@@ -55,7 +55,7 @@ public class LogoutTests {
         LogoutResult result = userService.logout(null);
 
         assertFalse(result.success());
-        assertEquals(401, result.statusCode());
-        assertEquals("Error: unauthorized", result.errorMessage().message());
+        assertEquals(400, result.statusCode());
+        assertEquals("Error: missing fields", result.errorMessage().message());
     }
 }

@@ -11,7 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import service.GameService;
-import service.Service;
+import service.BaseService;
 import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -19,14 +19,14 @@ import static org.junit.jupiter.api.Assertions.*;
 public class JoinGameTests {
     private final GameService gameService = new GameService();
     private final UserService userService = new UserService();
-    private final Service service = new Service();
+    private final BaseService baseService = new BaseService();
 
     private String trueToken;
     private int trueGameID;
 
     @BeforeEach
     public void registerUser() throws DataAccessException {
-        service.clear();
+        baseService.clear();
 
         MemoryGameDOA.resetGameIDs();
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");

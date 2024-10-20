@@ -7,18 +7,18 @@ import model.results.RegisterResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.Service;
+import service.BaseService;
 import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class RegisterTests {
     private final UserService userService = new UserService();
-    private final Service service = new Service();
+    private final BaseService baseService = new BaseService();
 
     @BeforeEach
     public void clear() throws DataAccessException {
-        service.clear();
+        baseService.clear();
     }
 
     @Test

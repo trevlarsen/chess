@@ -5,13 +5,13 @@ import dataaccess.MemoryAuthDOA;
 import dataaccess.MemoryGameDOA;
 import dataaccess.MemoryUserDOA;
 
-public class Service {
+public class BaseService {
 
     public final static MemoryUserDOA userDataAccess = new MemoryUserDOA();
     public final static MemoryGameDOA gameDataAccess = new MemoryGameDOA();
     public final static MemoryAuthDOA authDataAccess = new MemoryAuthDOA();
 
-    public Service() {
+    public BaseService() {
     }
 
     public void clear() throws DataAccessException {

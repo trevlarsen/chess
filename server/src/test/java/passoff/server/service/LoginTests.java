@@ -8,18 +8,18 @@ import model.results.LoginResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.Service;
+import service.BaseService;
 import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class LoginTests {
     private final UserService userService = new UserService();
-    private final Service service = new Service();
+    private final BaseService baseService = new BaseService();
 
     @BeforeEach
     public void registerUser() throws DataAccessException {
-        service.clear();
+        baseService.clear();
 
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         userService.register(goodUser);
