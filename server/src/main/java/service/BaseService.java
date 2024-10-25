@@ -1,9 +1,6 @@
 package service;
 
-import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDAO;
-import dataaccess.MemoryGameDAO;
-import dataaccess.MemoryUserDAO;
+import dataaccess.*;
 
 /**
  * Provides shared data access resources and utility functions
@@ -14,9 +11,24 @@ public class BaseService {
     /**
      * Shared data access objects
      */
-    public final static MemoryUserDAO USER_DAO = new MemoryUserDAO();
+//    public final static MemoryUserDAO USER_DAO = new MemoryUserDAO();
     public final static MemoryGameDAO GAME_DAO = new MemoryGameDAO();
-    public final static MemoryAuthDAO AUTH_DAO = new MemoryAuthDAO();
+//    public final static MemoryAuthDAO AUTH_DAO = new MemoryAuthDAO();
+
+    public final static SQLUserDAO USER_DAO;
+    //    public final static SQLGameDAO GAME_DAO;
+    public final static SQLAuthDAO AUTH_DAO;
+
+
+    static {
+        try {
+            USER_DAO = new SQLUserDAO();
+//            GAME_DAO = new SQLGameDAO();
+            AUTH_DAO = new SQLAuthDAO();
+        } catch (DataAccessException e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     public BaseService() {
     }
