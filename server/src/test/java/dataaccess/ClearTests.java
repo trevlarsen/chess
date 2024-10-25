@@ -20,20 +20,20 @@ public class ClearTests {
     public void clearSuccess() throws DataAccessException {
         baseService.clear();
 
-        MemoryGameDOA.resetGameIDs();
+        MemoryGameDAO.resetGameIDs();
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         String trueToken = userService.register(goodUser).registerResponse().authToken();
         gameService.createGame(trueToken, "game1");
         gameService.createGame(trueToken, "game2");
 
-        assertFalse(MemoryUserDOA.userDatabase.isEmpty());
-        assertFalse(MemoryAuthDOA.authDatabase.isEmpty());
-        assertFalse(MemoryGameDOA.gameDatabase.isEmpty());
+        assertFalse(MemoryUserDAO.userDatabase.isEmpty());
+        assertFalse(MemoryAuthDAO.authDatabase.isEmpty());
+        assertFalse(MemoryGameDAO.gameDatabase.isEmpty());
 
         baseService.clear();
 
-        assertTrue(MemoryUserDOA.userDatabase.isEmpty());
-        assertTrue(MemoryAuthDOA.authDatabase.isEmpty());
-        assertTrue(MemoryGameDOA.gameDatabase.isEmpty());
+        assertTrue(MemoryUserDAO.userDatabase.isEmpty());
+        assertTrue(MemoryAuthDAO.authDatabase.isEmpty());
+        assertTrue(MemoryGameDAO.gameDatabase.isEmpty());
     }
 }

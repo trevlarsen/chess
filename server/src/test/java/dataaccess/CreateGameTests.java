@@ -24,7 +24,7 @@ public class CreateGameTests {
     public void registerUser() throws DataAccessException {
         baseService.clear();
 
-        MemoryGameDOA.resetGameIDs();
+        MemoryGameDAO.resetGameIDs();
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         trueToken = userService.register(goodUser).registerResponse().authToken();
     }
@@ -41,7 +41,7 @@ public class CreateGameTests {
         assertNotNull(result.createGameResponse());
         assertEquals(1, result.createGameResponse().gameID());
 
-        assertTrue(MemoryGameDOA.gameDatabase.contains(new GameData(1, null, null, gameName, new ChessGame())));
+        assertTrue(MemoryGameDAO.gameDatabase.contains(new GameData(1, null, null, gameName, new ChessGame())));
     }
 
     @Test

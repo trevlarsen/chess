@@ -4,12 +4,12 @@ import model.UserData;
 
 import java.util.ArrayList;
 
-public class MemoryUserDOA implements UserDOAInterface {
+public class MemoryUserDAO implements UserDAOInterface {
 
     public static ArrayList<UserData> userDatabase = new ArrayList<>();
 
 
-    public MemoryUserDOA() {
+    public MemoryUserDAO() {
     }
 
     @Override

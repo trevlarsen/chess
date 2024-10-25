@@ -5,12 +5,12 @@ import model.GameData;
 
 import java.util.ArrayList;
 
-public class MemoryGameDOA implements GameDOAInterface {
+public class MemoryGameDAO implements GameDAOInterface {
 
     public static ArrayList<GameData> gameDatabase = new ArrayList<>();
     private static int nextGameID = 1;
 
-    public MemoryGameDOA() {
+    public MemoryGameDAO() {
     }
 
     @Override

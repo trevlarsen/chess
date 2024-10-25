@@ -1,14 +1,12 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.MemoryUserDOA;
+import dataaccess.MemoryUserDAO;
 import model.UserData;
 import model.results.RegisterResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.BaseService;
-import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +31,7 @@ public class RegisterTests {
         assertNotNull(result.registerResponse());
         assertEquals(goodUser.username(), result.registerResponse().username());
 
-        assertTrue(MemoryUserDOA.userDatabase.contains(goodUser));
+        assertTrue(MemoryUserDAO.userDatabase.contains(goodUser));
     }
 
     @Test

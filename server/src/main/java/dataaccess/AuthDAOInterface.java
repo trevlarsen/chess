@@ -7,7 +7,7 @@ import model.AuthData;
  * Implementations of this interface should handle the creation, retrieval,
  * and deletion of authentication records.
  */
-public interface AuthDOAInterface {
+public interface AuthDAOInterface {
 
     /**
      * Creates a new authentication token for the given username.

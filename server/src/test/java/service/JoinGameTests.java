@@ -2,7 +2,7 @@ package service;
 
 import chess.ChessGame;
 import dataaccess.DataAccessException;
-import dataaccess.MemoryGameDOA;
+import dataaccess.MemoryGameDAO;
 import model.GameData;
 import model.UserData;
 import model.requests.JoinGameRequest;
@@ -10,9 +10,6 @@ import model.results.JoinGameResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.GameService;
-import service.BaseService;
-import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -28,7 +25,7 @@ public class JoinGameTests {
     public void registerUser() throws DataAccessException {
         baseService.clear();
 
-        MemoryGameDOA.resetGameIDs();
+        MemoryGameDAO.resetGameIDs();
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         trueToken = userService.register(goodUser).registerResponse().authToken();
 
@@ -46,7 +43,7 @@ public class JoinGameTests {
         assertEquals(200, result.statusCode());
         assertEquals("{}", result.errorMessage().message());
 
-        assertTrue(MemoryGameDOA.gameDatabase.contains(new GameData(trueGameID, "Trevor", null, "Chess", new ChessGame())));
+        assertTrue(MemoryGameDAO.gameDatabase.contains(new GameData(trueGameID, "Trevor", null, "Chess", new ChessGame())));
     }
 
     @Test

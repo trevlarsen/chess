@@ -33,7 +33,7 @@ public class LogoutTests {
         assertEquals(200, result.statusCode());
         assertEquals("{}", result.errorMessage().message());
 
-        assertFalse(MemoryAuthDOA.authDatabase.contains(new AuthData(trueToken, "Trevor")));
+        assertFalse(MemoryAuthDAO.authDatabase.contains(new AuthData(trueToken, "Trevor")));
     }
 
     @Test

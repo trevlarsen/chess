@@ -1,15 +1,13 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDOA;
+import dataaccess.MemoryAuthDAO;
 import model.AuthData;
 import model.UserData;
 import model.results.LogoutResult;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import service.BaseService;
-import service.UserService;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +33,7 @@ public class LogoutTests {
         assertEquals(200, result.statusCode());
         assertEquals("{}", result.errorMessage().message());
 
-        assertFalse(MemoryAuthDOA.authDatabase.contains(new AuthData(trueToken, "Trevor")));
+        assertFalse(MemoryAuthDAO.authDatabase.contains(new AuthData(trueToken, "Trevor")));
     }
 
     @Test

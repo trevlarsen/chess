@@ -10,7 +10,7 @@ import java.util.ArrayList;
  * Implementations of this interface are responsible for creating,
  * retrieving, updating, and deleting game records.
  */
-public interface GameDOAInterface {
+public interface GameDAOInterface {
 
     /**
      * Creates a new game with the given name.

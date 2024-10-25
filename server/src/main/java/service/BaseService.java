@@ -1,9 +1,9 @@
 package service;
 
 import dataaccess.DataAccessException;
-import dataaccess.MemoryAuthDOA;
-import dataaccess.MemoryGameDOA;
-import dataaccess.MemoryUserDOA;
+import dataaccess.MemoryAuthDAO;
+import dataaccess.MemoryGameDAO;
+import dataaccess.MemoryUserDAO;
 
 /**
  * Provides shared data access resources and utility functions
@@ -14,9 +14,9 @@ public class BaseService {
     /**
      * Shared data access objects
      */
-    public final static MemoryUserDOA USER_DOA = new MemoryUserDOA();
-    public final static MemoryGameDOA GAME_DOA = new MemoryGameDOA();
-    public final static MemoryAuthDOA AUTH_DOA = new MemoryAuthDOA();
+    public final static MemoryUserDAO USER_DAO = new MemoryUserDAO();
+    public final static MemoryGameDAO GAME_DAO = new MemoryGameDAO();
+    public final static MemoryAuthDAO AUTH_DAO = new MemoryAuthDAO();
 
     public BaseService() {
     }
@@ -28,9 +28,9 @@ public class BaseService {
      */
     public void clear() throws DataAccessException {
         try {
-            USER_DOA.deleteAllUsers();
-            GAME_DOA.deleteAllGames();
-            AUTH_DOA.deleteAllAuths();
+            USER_DAO.deleteAllUsers();
+            GAME_DAO.deleteAllGames();
+            AUTH_DAO.deleteAllAuths();
         } catch (Exception e) {
             throw new DataAccessException("Error: description");
         }

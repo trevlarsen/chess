@@ -36,8 +36,8 @@ public class GameService {
                 return CreateGameResult.error(401, ErrorResponse.unauthorized());
             }
 
-            GameData newGame = GAME_DOA.newGame(gameName);
-            GAME_DOA.addGame(newGame);
+            GameData newGame = GAME_DAO.newGame(gameName);
+            GAME_DAO.addGame(newGame);
             return new CreateGameResult(true, 200, ErrorResponse.empty(), new CreateGameResponse(newGame.gameID()));
 
         } catch (Exception e) {
@@ -65,12 +65,12 @@ public class GameService {
             var playerColor = joinGameRequest.playerColor();
             int gameID = joinGameRequest.gameID();
 
-            if (GAME_DOA.getGame(gameID) == null) {
+            if (GAME_DAO.getGame(gameID) == null) {
                 return JoinGameResult.error(400, ErrorResponse.gameNotFound());
             }
 
-            var user = AUTH_DOA.getAuth(authToken);
-            var success = GAME_DOA.joinGame(user.username(), playerColor, gameID);
+            var user = AUTH_DAO.getAuth(authToken);
+            var success = GAME_DAO.joinGame(user.username(), playerColor, gameID);
 
             if (!success) {
                 return JoinGameResult.error(403, ErrorResponse.colorTaken());
@@ -99,7 +99,7 @@ public class GameService {
                 return ListGamesResult.error(401, ErrorResponse.unauthorized());
             }
 
-            ListGamesResponse listGamesResponse = new ListGamesResponse(GAME_DOA.getAllGames());
+            ListGamesResponse listGamesResponse = new ListGamesResponse(GAME_DAO.getAllGames());
             return new ListGamesResult(true, 200, ErrorResponse.empty(), listGamesResponse);
 
         } catch (Exception e) {

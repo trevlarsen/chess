@@ -6,7 +6,7 @@ import model.UserData;
  * Interface for managing user data access operations.
  * Implementations of this interface handle the creation, retrieval, and deletion of user records.
  */
-public interface UserDOAInterface {
+public interface UserDAOInterface {
 
     /**
      * Creates a new user in the data store.

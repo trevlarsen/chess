@@ -25,7 +25,7 @@ public class ListGamesTests {
     public void registerUser() throws DataAccessException {
         baseService.clear();
 
-        MemoryGameDOA.resetGameIDs();
+        MemoryGameDAO.resetGameIDs();
         UserData goodUser = new UserData("Trevor", "mypass", "mymail.com");
         trueToken = userService.register(goodUser).registerResponse().authToken();
 
