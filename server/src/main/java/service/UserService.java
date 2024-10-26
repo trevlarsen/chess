@@ -59,7 +59,7 @@ public class UserService {
 
             UserData existingUser = USER_DAO.getUser(loginRequest.username());
 
-            if (existingUser == null || !Objects.equals(existingUser.password(), loginRequest.password())) {
+            if (existingUser == null || !ValidationService.PasswordsMatch(loginRequest.password(), existingUser.password())) {
                 return LoginResult.error(401, ErrorResponse.unauthorized());
             }
 

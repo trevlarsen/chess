@@ -1,5 +1,7 @@
 package dataaccess;
 
+import org.mindrot.jbcrypt.BCrypt;
+
 import java.sql.*;
 import java.util.Properties;
 
@@ -82,5 +84,13 @@ public class DatabaseManager {
         } catch (Exception e) {
             throw new DataAccessException(String.format("Failed to configure database: %s", e.getMessage()));
         }
+    }
+
+    public static String encryptPassword(String clearPassword) {
+        return BCrypt.hashpw(clearPassword, BCrypt.gensalt());
+    }
+
+    public static boolean checkPassword(String clearPassword, String encryptedPassword) {
+        return BCrypt.checkpw(clearPassword, encryptedPassword);
     }
 }

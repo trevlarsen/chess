@@ -18,6 +18,7 @@ public class BaseService {
     public final static SQLUserDAO USER_DAO;
     //    public final static SQLGameDAO GAME_DAO;
     public final static SQLAuthDAO AUTH_DAO;
+    public static boolean USING_SQL;
 
 
     static {
@@ -25,6 +26,7 @@ public class BaseService {
             USER_DAO = new SQLUserDAO();
 //            GAME_DAO = new SQLGameDAO();
             AUTH_DAO = new SQLAuthDAO();
+            USING_SQL = true;
         } catch (DataAccessException e) {
             throw new RuntimeException(e);
         }
