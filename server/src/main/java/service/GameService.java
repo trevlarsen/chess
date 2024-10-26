@@ -37,8 +37,8 @@ public class GameService {
             }
 
             GameData newGame = GAME_DAO.newGame(gameName);
-            GAME_DAO.addGame(newGame);
-            return new CreateGameResult(true, 200, ErrorResponse.empty(), new CreateGameResponse(newGame.gameID()));
+            int gameID = GAME_DAO.addGame(newGame);
+            return new CreateGameResult(true, 200, ErrorResponse.empty(), new CreateGameResponse(gameID));
 
         } catch (Exception e) {
             return CreateGameResult.error(500, ErrorResponse.internal(e.getMessage()));

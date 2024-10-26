@@ -19,8 +19,9 @@ public class MemoryGameDAO implements GameDAOInterface {
     }
 
     @Override
-    public void addGame(GameData gameData) {
+    public int addGame(GameData gameData) {
         gameDatabase.add(gameData);
+        return gameData.gameID();
     }
 
     @Override

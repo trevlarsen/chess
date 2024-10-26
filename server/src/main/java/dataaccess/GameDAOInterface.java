@@ -25,7 +25,7 @@ public interface GameDAOInterface {
      *
      * @param gameData the {@link GameData} object to be added
      */
-    void addGame(GameData gameData);
+    int addGame(GameData gameData);
 
     /**
      * Retrieves the game associated with the specified game ID.

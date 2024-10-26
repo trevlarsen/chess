@@ -11,24 +11,25 @@ public class BaseService {
     /**
      * Shared data access objects
      */
-//    public final static MemoryUserDAO USER_DAO = new MemoryUserDAO();
-    public final static MemoryGameDAO GAME_DAO = new MemoryGameDAO();
-//    public final static MemoryAuthDAO AUTH_DAO = new MemoryAuthDAO();
-
-    public final static SQLUserDAO USER_DAO;
-    //    public final static SQLGameDAO GAME_DAO;
-    public final static SQLAuthDAO AUTH_DAO;
-    public static boolean USING_SQL;
-
+    public final static UserDAOInterface USER_DAO;
+    public final static GameDAOInterface GAME_DAO;
+    public final static AuthDAOInterface AUTH_DAO;
+    public static boolean USING_SQL = true;  // Set this to true to use SQL DAOs
 
     static {
-        try {
-            USER_DAO = new SQLUserDAO();
-//            GAME_DAO = new SQLGameDAO();
-            AUTH_DAO = new SQLAuthDAO();
-            USING_SQL = true;
-        } catch (DataAccessException e) {
-            throw new RuntimeException(e);
+        if (USING_SQL) {
+            try {
+                USER_DAO = new SQLUserDAO();
+                GAME_DAO = new SQLGameDAO();
+                AUTH_DAO = new SQLAuthDAO();
+            } catch (DataAccessException e) {
+                throw new RuntimeException("Failed to initialize SQL DAOs: " + e.getMessage(), e);
+            }
+        } else {
+            // Use Memory DAOs
+            USER_DAO = new MemoryUserDAO();
+            GAME_DAO = new MemoryGameDAO();
+            AUTH_DAO = new MemoryAuthDAO();
         }
     }
 
