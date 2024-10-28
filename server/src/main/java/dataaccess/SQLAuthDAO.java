@@ -1,8 +1,8 @@
 package dataaccess;
 
 import model.AuthData;
+import service.ValidationService;
 
-import java.sql.SQLException;
 import java.util.UUID;
 
 public class SQLAuthDAO implements AuthDAOInterface {
@@ -22,6 +22,10 @@ public class SQLAuthDAO implements AuthDAOInterface {
 
     @Override
     public AuthData newAuth(String username) {
+        if (username == null || username.isBlank()) {
+            return null;
+        } // Redundant check
+
         String authToken = UUID.randomUUID().toString();
         return new AuthData(authToken, username);
     }
@@ -31,10 +35,13 @@ public class SQLAuthDAO implements AuthDAOInterface {
         String sql = "INSERT INTO auth (username, authToken) VALUES (?, ?)";
         try (var conn = DatabaseManager.getConnection();
              var statement = conn.prepareStatement(sql)) {
+            if (ValidationService.inputIsInvalid(authData)) {
+                throw new Exception("Input is invalid");
+            }
             statement.setString(1, authData.username());
             statement.setString(2, authData.authToken());
             statement.executeUpdate();
-        } catch (SQLException | DataAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to add auth data: " + e.getMessage(), e);
         }
     }
@@ -44,6 +51,9 @@ public class SQLAuthDAO implements AuthDAOInterface {
         String sql = "SELECT username FROM auth WHERE authToken = ?";
         try (var conn = DatabaseManager.getConnection();
              var statement = conn.prepareStatement(sql)) {
+            if (ValidationService.inputIsInvalid(authToken)) {
+                throw new Exception("Input is invalid");
+            }
             statement.setString(1, authToken);
             try (var rs = statement.executeQuery()) {
                 if (rs.next()) {
@@ -51,7 +61,7 @@ public class SQLAuthDAO implements AuthDAOInterface {
                     return new AuthData(authToken, username);
                 }
             }
-        } catch (SQLException | DataAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to retrieve auth data: " + e.getMessage(), e);
         }
         return null;
@@ -62,9 +72,12 @@ public class SQLAuthDAO implements AuthDAOInterface {
         String sql = "DELETE FROM auth WHERE authToken = ?";
         try (var conn = DatabaseManager.getConnection();
              var statement = conn.prepareStatement(sql)) {
+            if (ValidationService.inputIsInvalid(authToken)) {
+                throw new Exception("Input is invalid");
+            }
             statement.setString(1, authToken);
             statement.executeUpdate();
-        } catch (SQLException | DataAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to delete auth data: " + e.getMessage(), e);
         }
     }
@@ -75,7 +88,7 @@ public class SQLAuthDAO implements AuthDAOInterface {
         try (var conn = DatabaseManager.getConnection();
              var statement = conn.prepareStatement(sql)) {
             statement.executeUpdate();
-        } catch (SQLException | DataAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to delete all auth data: " + e.getMessage(), e);
         }
     }

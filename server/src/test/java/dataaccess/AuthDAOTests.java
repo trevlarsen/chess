@@ -22,7 +22,7 @@ class AuthDAOTest {
 
     @AfterEach
     void tearDown() {
-        authDAO.deleteAllAuths(); // Clean up after each test
+//        authDAO.deleteAllAuths(); // Clean up after each test
     }
 
     @Test
@@ -42,9 +42,7 @@ class AuthDAOTest {
         String username = "";
         AuthData authData = authDAO.newAuth(username);
 
-        assertNotNull(authData);
-        assertEquals(username, authData.username());
-        assertNotNull(authData.authToken());
+        assertNull(authData);
     }
 
     @Test
@@ -64,8 +62,7 @@ class AuthDAOTest {
     @Test
     @DisplayName("Add Auth - Invalid Token")
     void addAuthNegativeInvalidToken() {
-        String invalidToken = UUID.randomUUID().toString(); // Create an invalid AuthData
-        AuthData invalidAuthData = new AuthData(invalidToken, "testUser");
+        AuthData invalidAuthData = new AuthData(null, "testUser");
 
         assertThrows(RuntimeException.class, () -> authDAO.addAuth(invalidAuthData),
                 "Adding invalid auth data should throw an exception");
