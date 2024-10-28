@@ -6,7 +6,7 @@ import java.lang.reflect.Field;
 import java.util.Objects;
 
 import static service.BaseService.AUTH_DAO;
-import static service.BaseService.USING_SQL;
+import static service.BaseService.usingSql;
 
 /**
  * A utility service responsible for validating inputs and checking authorization.
@@ -63,9 +63,10 @@ public class ValidationService {
         return AUTH_DAO.getAuth(authToken) == null;
     }
 
-    public static boolean PasswordsMatch(String inputtedPassword, String storedEncryptedPassword) {
-        if (USING_SQL)
+    public static boolean passwordsMatch(String inputtedPassword, String storedEncryptedPassword) {
+        if (usingSql) {
             return BCrypt.checkpw(inputtedPassword, storedEncryptedPassword);
+        }
         return Objects.equals(inputtedPassword, storedEncryptedPassword);
     }
 }

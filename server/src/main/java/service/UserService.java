@@ -6,8 +6,6 @@ import model.responses.RegisterResponse;
 import model.requests.LoginRequest;
 import model.results.*;
 
-import java.util.Objects;
-
 import static service.BaseService.*;
 
 /**
@@ -59,7 +57,7 @@ public class UserService {
 
             UserData existingUser = USER_DAO.getUser(loginRequest.username());
 
-            if (existingUser == null || !ValidationService.PasswordsMatch(loginRequest.password(), existingUser.password())) {
+            if (existingUser == null || !ValidationService.passwordsMatch(loginRequest.password(), existingUser.password())) {
                 return LoginResult.error(401, ErrorResponse.unauthorized());
             }
 

@@ -14,10 +14,10 @@ public class BaseService {
     public final static UserDAOInterface USER_DAO;
     public final static GameDAOInterface GAME_DAO;
     public final static AuthDAOInterface AUTH_DAO;
-    public static boolean USING_SQL = true;  // Set this to true to use SQL DAOs
+    public static boolean usingSql = true;  // Set this to true to use SQL DAOs
 
     static {
-        if (USING_SQL) {
+        if (usingSql) {
             try {
                 USER_DAO = new SQLUserDAO();
                 GAME_DAO = new SQLGameDAO();

@@ -89,8 +89,4 @@ public class DatabaseManager {
     public static String encryptPassword(String clearPassword) {
         return BCrypt.hashpw(clearPassword, BCrypt.gensalt());
     }
-
-    public static boolean checkPassword(String clearPassword, String encryptedPassword) {
-        return BCrypt.checkpw(clearPassword, encryptedPassword);
-    }
 }
