@@ -1,7 +1,6 @@
 package dataaccess;
 
 import chess.ChessGame;
-import com.google.gson.Gson;
 import model.GameData;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,13 +18,12 @@ class GameDAOTests {
     @BeforeEach
     void setUp() throws DataAccessException {
         gameDAO = new SQLGameDAO();
-        gameDAO.deleteAllGames(); // Ensure a clean state before each test
+        gameDAO.deleteAllGames();
     }
 
     @AfterEach
     void tearDown() {
-        // Optionally clean up after each test if necessary
-        // gameDAO.deleteAllGames();
+        gameDAO.deleteAllGames();
     }
 
     @Test
