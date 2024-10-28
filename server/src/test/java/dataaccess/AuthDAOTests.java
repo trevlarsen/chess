@@ -22,7 +22,7 @@ class AuthDAOTest {
 
     @AfterEach
     void tearDown() {
-//        authDAO.deleteAllAuths(); // Clean up after each test
+        authDAO.deleteAllAuths(); // Clean up after each test
     }
 
     @Test

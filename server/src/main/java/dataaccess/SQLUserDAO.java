@@ -29,7 +29,7 @@ public class SQLUserDAO implements UserDAOInterface {
             statement.setString(2, DatabaseManager.encryptPassword(userData.password()));
             statement.setString(3, userData.email());
             statement.executeUpdate();
-        } catch (SQLException | DataAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to create user: " + e.getMessage(), e);
         }
     }
@@ -48,7 +48,7 @@ public class SQLUserDAO implements UserDAOInterface {
                     return new UserData(user, pass, email);
                 }
             }
-        } catch (SQLException | DataAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to retrieve user: " + e.getMessage(), e);
         }
         return null;
@@ -60,7 +60,7 @@ public class SQLUserDAO implements UserDAOInterface {
         try (var conn = DatabaseManager.getConnection();
              var statement = conn.prepareStatement(sql)) {
             statement.executeUpdate();
-        } catch (SQLException | DataAccessException e) {
+        } catch (Exception e) {
             throw new RuntimeException("Failed to delete all users: " + e.getMessage(), e);
         }
     }
