@@ -24,7 +24,7 @@ public class SQLAuthDAO implements AuthDAOInterface {
     public AuthData newAuth(String username) {
         if (username == null || username.isBlank()) {
             return null;
-        } // Redundant check
+        }
 
         String authToken = UUID.randomUUID().toString();
         return new AuthData(authToken, username);

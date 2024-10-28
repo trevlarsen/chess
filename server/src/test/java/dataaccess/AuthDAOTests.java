@@ -17,12 +17,12 @@ class AuthDAOTests {
     @BeforeEach
     void setUp() throws DataAccessException {
         authDAO = new SQLAuthDAO();
-        authDAO.deleteAllAuths(); // Ensure a clean state before each test
+        authDAO.deleteAllAuths();
     }
 
     @AfterEach
     void tearDown() {
-        authDAO.deleteAllAuths(); // Clean up after each test
+        authDAO.deleteAllAuths();
     }
 
     @Test
@@ -53,7 +53,6 @@ class AuthDAOTests {
 
         assertDoesNotThrow(() -> authDAO.addAuth(authData), "Adding auth data should not throw an exception");
 
-        // Verify that the auth data can be retrieved
         AuthData retrievedData = authDAO.getAuth(authData.authToken());
         assertNotNull(retrievedData);
         assertEquals(authData.username(), retrievedData.username());
@@ -83,7 +82,7 @@ class AuthDAOTests {
     @Test
     @DisplayName("Get Auth - Nonexistent Token")
     void getAuthNegativeNonExistentToken() {
-        String nonExistentToken = UUID.randomUUID().toString(); // Use a token that doesn't exist
+        String nonExistentToken = UUID.randomUUID().toString();
         AuthData retrievedData = authDAO.getAuth(nonExistentToken);
         assertNull(retrievedData, "Retrieving with a non-existent token should return null");
     }
@@ -104,7 +103,7 @@ class AuthDAOTests {
     @Test
     @DisplayName("Delete Auth - Nonexistent Token")
     void deleteAuthNegativeNonExistentToken() {
-        String nonExistentToken = UUID.randomUUID().toString(); // Use a token that doesn't exist
+        String nonExistentToken = UUID.randomUUID().toString();
         assertDoesNotThrow(() -> authDAO.deleteAuth(nonExistentToken),
                 "Deleting a non-existent auth token should not throw an exception");
     }
@@ -117,9 +116,8 @@ class AuthDAOTests {
 
         assertDoesNotThrow(() -> authDAO.deleteAllAuths(), "Deleting all auths should not throw an exception");
 
-        // Verify that the auth data is cleared
-        AuthData retrievedData1 = authDAO.getAuth("user1"); // Attempt to retrieve an existing user
-        AuthData retrievedData2 = authDAO.getAuth("user2"); // Attempt to retrieve an existing user
+        AuthData retrievedData1 = authDAO.getAuth("user1");
+        AuthData retrievedData2 = authDAO.getAuth("user2");
         assertNull(retrievedData1, "Auth data for user1 should be null after deletion");
         assertNull(retrievedData2, "Auth data for user2 should be null after deletion");
     }

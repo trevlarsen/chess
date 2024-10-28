@@ -31,7 +31,6 @@ class UserDAOTests {
         assertDoesNotThrow(() -> userDAO.createUser(userData),
                 "Creating a user should not throw an exception");
 
-        // Verify user can be retrieved
         UserData retrievedUser = userDAO.getUser("testUser");
         assertNotNull(retrievedUser);
         assertEquals(userData.username(), retrievedUser.username());
@@ -44,7 +43,7 @@ class UserDAOTests {
         UserData userData1 = new UserData("testUser", "password123", "test1@example.com");
         UserData userData2 = new UserData("testUser", "anotherPass", "test2@example.com");
 
-        userDAO.createUser(userData1); // First user creation should succeed
+        userDAO.createUser(userData1);
 
         assertThrows(RuntimeException.class,
                 () -> userDAO.createUser(userData2),
@@ -89,7 +88,6 @@ class UserDAOTests {
         assertDoesNotThrow(() -> userDAO.deleteAllUsers(),
                 "Deleting all users should not throw an exception");
 
-        // Verify all users are deleted
         assertNull(userDAO.getUser("user1"), "User1 should be null after deletion");
         assertNull(userDAO.getUser("user2"), "User2 should be null after deletion");
     }

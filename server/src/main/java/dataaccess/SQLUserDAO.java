@@ -2,8 +2,6 @@ package dataaccess;
 
 import model.UserData;
 
-import java.sql.SQLException;
-
 public class SQLUserDAO implements UserDAOInterface {
 
     public SQLUserDAO() throws DataAccessException {
