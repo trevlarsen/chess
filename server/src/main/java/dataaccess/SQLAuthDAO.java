@@ -7,8 +7,6 @@ import java.util.UUID;
 
 public class SQLAuthDAO implements AuthDAOInterface {
 
-    private static SQLAuthDAO instance;
-
     public SQLAuthDAO() throws DataAccessException {
         String[] createStatements = {
                 """
