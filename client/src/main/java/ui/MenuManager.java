@@ -14,15 +14,16 @@ public class MenuManager {
     }
 
     public void run() {
-        while (true) {
+        while (currentState != MenuState.QUIT) {
             switch (currentState) {
                 case PRELOGIN:
-                    if (preloginMenu.run() == MenuState.POSTLOGIN) {
-                        currentState = MenuState.POSTLOGIN;
-                    }
+                    currentState = preloginMenu.run();
                     break;
                 case POSTLOGIN:
-                    // Similar pattern for postlogin and game
+                    currentState = postloginMenu.run();
+                    break;
+                case GAME:
+                    currentState = gameMenu.run();
                     break;
             }
         }
