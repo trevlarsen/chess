@@ -1,17 +1,23 @@
 package ui;
 
 public class MenuManager {
+
+    public final ServerFacade serverFacade;
+
     private MenuState currentState;
     private PreloginMenu preloginMenu;
     private PostloginMenu postloginMenu;
     private GameMenu gameMenu;
 
-    public MenuManager() {
+
+    public MenuManager(String url) {
+        serverFacade = new ServerFacade(url);
         currentState = MenuState.PRELOGIN;
         preloginMenu = new PreloginMenu();
         postloginMenu = new PostloginMenu();
         gameMenu = new GameMenu();
     }
+
 
     public void run() {
         while (currentState != MenuState.QUIT) {
