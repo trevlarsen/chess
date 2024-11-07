@@ -9,15 +9,8 @@ import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
-import model.requests.CreateGameRequest;
-import model.requests.JoinGameRequest;
-import model.requests.LoginRequest;
-import model.responses.CreateGameResponse;
-import model.responses.ListGamesResponse;
-import model.responses.RegisterResponse;
-import model.results.ListGamesResult;
-import model.results.LoginResult;
-import model.results.RegisterResult;
+import model.requests.*;
+import model.responses.*;
 
 public class ServerFacade {
 
@@ -60,7 +53,7 @@ public class ServerFacade {
 
     public ArrayList<GameData> listGames(String authToken) throws IOException {
         var path = "/game";
-        var listGamesResponse = this.makeRequest("PUT", path, null, authToken, ListGamesResponse.class);
+        var listGamesResponse = this.makeRequest("GET", path, null, authToken, ListGamesResponse.class);
         return listGamesResponse.games();
     }
 
@@ -68,7 +61,6 @@ public class ServerFacade {
         var path = "/db";
         this.makeRequest("DELETE", path, null, null, null);
     }
-
 
     private <T> T makeRequest(String method, String path, Object request, String authToken, Class<T> responseClass) throws IOException {
         try {
@@ -86,7 +78,6 @@ public class ServerFacade {
         }
     }
 
-
     private static void writeBody(Object request, HttpURLConnection http, String authToken) throws IOException {
         if (authToken != null) {
             http.setRequestProperty("authorization", authToken);
@@ -101,11 +92,21 @@ public class ServerFacade {
     }
 
     private void throwIfNotSuccessful(HttpURLConnection http) throws IOException {
-        var status = http.getResponseCode();
+        int status = http.getResponseCode();
         if (!isSuccessful(status)) {
-            throw new IOException("failure: " + status);
+            // Read the error body from the server's response
+            ErrorResponse errorResponse = readErrorStream(http, ErrorResponse.class);
+
+            // If there's an error message, include it in the exception
+            String errorMessage = (errorResponse != null && errorResponse.message() != null)
+                    ? errorResponse.message()
+                    : "Unknown error occurred";
+
+            // Throw an IOException with the error message
+            throw new IOException(errorMessage);
         }
     }
+
 
     private static <T> T readBody(HttpURLConnection http, Class<T> responseClass) throws IOException {
         T response = null;
@@ -120,9 +121,30 @@ public class ServerFacade {
         return response;
     }
 
-
     private boolean isSuccessful(int status) {
         return status / 100 == 2;
     }
+
+    private <T> T readErrorStream(HttpURLConnection http, Class<T> responseClass) throws IOException {
+        InputStream errorStream = http.getErrorStream();  // Get the error stream
+        if (errorStream == null) {
+            return null;  // If no error body is provided, return null
+        }
+
+        try (InputStreamReader reader = new InputStreamReader(errorStream);
+             BufferedReader bufferedReader = new BufferedReader(reader)) {
+
+            // Read the entire error stream into a single string
+            StringBuilder errorMessage = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                errorMessage.append(line);
+            }
+
+            // Deserialize the error message into the provided response class
+            return new Gson().fromJson(errorMessage.toString(), responseClass);
+        }
+    }
+
 }
 
