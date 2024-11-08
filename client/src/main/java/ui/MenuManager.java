@@ -34,6 +34,7 @@ public class MenuManager {
 
 
     public void run() throws IOException {
+        printWelcome();
         while (currentState != MenuState.QUIT) {
             currentState = switch (currentState) {
                 case PRELOGIN -> preloginMenu.run();
@@ -116,6 +117,27 @@ public class MenuManager {
         System.out.println(SET_TEXT_BOLD + SET_TEXT_COLOR_YELLOW +
                 "\nSelect an option below by entering its option number."
                 + RESET_TEXT_BOLD_FAINT + RESET_TEXT_COLOR);
+    }
+
+    public static void printWelcome() {
+        System.out.println(EscapeSequences.ERASE_SCREEN);  // Clear the screen
+
+        String blue = EscapeSequences.SET_TEXT_COLOR_DB;
+        String white = EscapeSequences.SET_TEXT_COLOR_WHITE;
+        String reset = EscapeSequences.RESET_TEXT_COLOR;
+
+        System.out.println(blue + "██╗    ██╗" + white + "███████╗" + blue + "██╗     " + white + "███████╗" + blue +
+                "██████╗  " + white + " ███╗███╗ " + blue + "███████╗");
+        System.out.println(blue + "██║    ██║" + white + "██╔════╝" + blue + "██║     " + white + "██╔════╝" + blue +
+                "██╔═══██╗" + white + "██║███╝██║" + blue + "██╔════╝");
+        System.out.println(blue + "██║ █╗ ██║" + white + "█████╗  " + blue + "██║     " + white + "██║     " + blue +
+                "██║   ██║" + white + "██║ █╝ ██║" + blue + "█████╗  ");
+        System.out.println(blue + "██║███╗██║" + white + "██╔══╝  " + blue + "██║     " + white + "██║     " + blue +
+                "██║   ██║" + white + "██║    ██║" + blue + "██╔══╝  ");
+        System.out.println(blue + "╚███╝███╔╝" + white + "███████╗" + blue + "███████╗" + white + "███████╗" + blue +
+                "╚██████╔╝" + white + "██║    ██║" + blue + "███████╗");
+        System.out.println(" " + reset);
+        System.out.println(white + "                 WELCOME TO CHESS 240                  " + reset);
     }
 
     public static void printPreloginMenu() {

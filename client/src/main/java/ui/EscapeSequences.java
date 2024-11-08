@@ -34,6 +34,7 @@ public class EscapeSequences {
     public static final String SET_TEXT_COLOR_MAGENTA = SET_TEXT_COLOR + "5m";
     public static final String SET_TEXT_COLOR_WHITE = SET_TEXT_COLOR + "15m";
     public static final String SET_TEXT_COLOR_LG = SET_TEXT_COLOR + "82m";
+    public static final String SET_TEXT_COLOR_DB = SET_TEXT_COLOR + "21m";
     public static final String RESET_TEXT_COLOR = UNICODE_ESCAPE + "[39m";
 
     public static final String SET_BG_COLOR_BLACK = SET_BG_COLOR + "0m";
