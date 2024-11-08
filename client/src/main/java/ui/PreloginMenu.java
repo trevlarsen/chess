@@ -1,8 +1,10 @@
 package ui;
 
+import model.AuthData;
+
 import java.io.IOException;
 
-import static ui.MenuManager.serverFacade;
+import static ui.MenuManager.*;
 
 public class PreloginMenu {
 
@@ -45,8 +47,10 @@ public class PreloginMenu {
         try {
             String username = MenuManager.getValidStringInput("Enter username: ");
             String password = MenuManager.getValidStringInput("Enter password: ");
-            serverFacade.login(username, password);
-            System.out.println("Login Successful!");
+            AuthData authData = serverFacade.login(username, password);
+            System.out.println("Login Successful for " + username + "!");
+            loggedInUsername = authData.username();
+            loggedInAuth = authData.authToken();
             return MenuState.POSTLOGIN;
         } catch (IOException e) {
             System.out.println("Login failed: " + e.getMessage());
@@ -68,7 +72,9 @@ public class PreloginMenu {
             serverFacade.register(username, password, email);
             System.out.println("Registration Successful!");
             // Login after successful registration
-            serverFacade.login(username, password);
+            AuthData authData = serverFacade.login(username, password);
+            loggedInUsername = authData.username();
+            loggedInAuth = authData.authToken();
             return MenuState.POSTLOGIN;
         } catch (IOException e) {
             System.out.println("Registration failed: " + e.getMessage());

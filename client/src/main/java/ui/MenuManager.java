@@ -8,6 +8,8 @@ public class MenuManager {
     public static ServerFacade serverFacade;
     public static Scanner scanner = new Scanner(System.in);
     private static final int MAX_LENGTH = 30;
+    public static String loggedInUsername = null;
+    public static String loggedInAuth = null;
 
     private MenuState currentState;
     private PreloginMenu preloginMenu;
