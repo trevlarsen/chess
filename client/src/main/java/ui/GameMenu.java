@@ -2,12 +2,26 @@ package ui;
 
 public class GameMenu {
 
+    private final int numGameOptions = 2;
+
     private final String gameMenu = """
-            Gameplay not implemented yet.
+            \nGame functionality coming soon!
+            \t1. Go back
+            \t2. Quit
             """;
 
 
     public MenuState run() {
-        return MenuState.POSTLOGIN;
+        MenuState result = MenuState.GAME;
+        System.out.print(gameMenu);
+        int input = MenuManager.getValidOption(numGameOptions);
+
+        if (input == 1) {
+            result = MenuState.POSTLOGIN;
+        } else {
+            System.out.print("Invalid option. Please try again.");
+        }
+        return result;
     }
 }
+

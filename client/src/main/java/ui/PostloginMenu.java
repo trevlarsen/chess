@@ -6,12 +6,15 @@ import model.GameData;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import static ui.EscapeSequences.*;
+import static ui.EscapeSequences.RESET_TEXT_BOLD_FAINT;
 import static ui.MenuManager.*;
 
 public class PostloginMenu {
 
     private final int numPostloginOptions = 6;
     private ArrayList<GameData> listedGames = new ArrayList<>();
+    private int gameId = 1;
 
     private final String postloginMenu = """
             \nYou are logged in. What would you like to do?
@@ -30,7 +33,7 @@ public class PostloginMenu {
      * @throws IOException if there's an error with server communication.
      */
     public MenuState run() throws IOException {
-        MenuState result = MenuState.GAME;
+        MenuState result = MenuState.POSTLOGIN;
         System.out.print(postloginMenu);
         int input = MenuManager.getValidOption(numPostloginOptions);
 
@@ -52,10 +55,10 @@ public class PostloginMenu {
     private MenuState logout() {
         try {
             serverFacade.logout(loggedInAuth);
-            System.out.println("Logout Successful.");
+            printResult("Logout Successful.");
             return MenuState.PRELOGIN;
         } catch (IOException e) {
-            System.out.println("Logout failed: " + e.getMessage());
+            MenuManager.printError("Logout", e.getMessage());
             return MenuState.GAME;
         }
     }
@@ -68,36 +71,40 @@ public class PostloginMenu {
             var games = serverFacade.listGames(loggedInAuth);
             listedGames = new ArrayList<>(games);  // Store games for reference in Play/Observe
             if (games.isEmpty()) {
-                System.out.print("There are no current games. Create a game to get started.");
+                printNoGamesMessage();
                 return;
             }
+            System.out.println(SET_TEXT_COLOR_BLUE);
             System.out.println("Available Games:");
             int index = 1;
             for (GameData game : listedGames) {
-                System.out.printf("%d. %s - White: %s, Black: %s", index++, game.gameName(), game.whiteUsername(), game.blackUsername());
+                System.out.printf("%d. '%s' - White: %s, Black: %s\n", index++, game.gameName(), game.whiteUsername(), game.blackUsername());
             }
+            System.out.println(RESET_TEXT_COLOR);
         } catch (IOException e) {
-            System.out.println("Failed to list games: " + e.getMessage());
+            MenuManager.printError("List Games", e.getMessage());
         }
     }
 
     private void createGame() {
         try {
-            String gameName = MenuManager.getValidStringInput("Enter a name for the new game: ");
-            int gameId = serverFacade.createGame(gameName, loggedInAuth);
-            System.out.println("Game created with ID: " + gameId);
+            String gameName = getValidStringInput("Enter a name for the new game: ");
+            serverFacade.createGame(gameName, loggedInAuth);
+            var currentGames = serverFacade.listGames(loggedInAuth);
+            printResult("Game created with ID: " + currentGames.size());
         } catch (IOException e) {
-            System.out.println("Failed to create game: " + e.getMessage());
+            printError("Create Game", e.getMessage());
         }
     }
 
     private MenuState playGame() {
         if (listedGames.isEmpty()) {
-            System.out.println("There are no current games. Create a game to get started.");
+            printNoGamesMessage();
             return MenuState.POSTLOGIN;
         }
 
         try {
+            System.out.println("Which game would you like to play?");
             int gameIndex = MenuManager.getValidOption(listedGames.size()) - 1;
             GameData selectedGame = listedGames.get(gameIndex);
 
@@ -107,7 +114,6 @@ public class PostloginMenu {
                 color = scanner.nextLine().trim().toLowerCase();
 
                 if (color.equals("white") || color.equals("black")) {
-                    System.out.println("You selected " + color + ".");
                     break;
                 } else {
                     System.out.print("Invalid color. ");
@@ -119,24 +125,25 @@ public class PostloginMenu {
             }
 
             serverFacade.joinGame(playerColor, selectedGame.gameID(), loggedInAuth);
-            System.out.println("You joined the game '" + selectedGame.gameName() + "' as " + color + ".");
+            printResult("You joined the game '" + selectedGame.gameName() + "' as " + color + ".");
             return MenuState.GAME;
         } catch (IOException e) {
-            System.out.println("Failed to join game: " + e.getMessage());
+            MenuManager.printError("Join Game", e.getMessage());
             return MenuState.POSTLOGIN;
         }
     }
 
     private MenuState observeGame() {
         if (listedGames.isEmpty()) {
-            System.out.println("There are no current games. Create a game to get started.");
+            printNoGamesMessage();
             return MenuState.POSTLOGIN;
         }
 
-        int gameIndex = MenuManager.getValidOption(listedGames.size()) - 1;
+        System.out.println("Which game would you like to observe?");
+        int gameIndex = getValidOption(listedGames.size()) - 1;
         GameData selectedGame = listedGames.get(gameIndex);
 
-        System.out.println("You are now observing the game '" + selectedGame.gameName() + "'.");
+        printResult("You are now observing the game '" + selectedGame.gameName() + "'.");
         return MenuState.GAME;
     }
 }

@@ -4,6 +4,8 @@ import model.AuthData;
 
 import java.io.IOException;
 
+import static ui.EscapeSequences.*;
+import static ui.EscapeSequences.RESET_TEXT_COLOR;
 import static ui.MenuManager.*;
 
 public class PreloginMenu {
@@ -28,9 +30,11 @@ public class PreloginMenu {
         switch (input) {
             case 1 -> result = this.loginUI();
             case 2 -> result = this.registerUI();
-            case 3 -> System.out.println("Select an option below by entering its option number.");
+            case 3 -> System.out.println(SET_TEXT_BOLD + SET_TEXT_COLOR_YELLOW +
+                    "\nSelect an option below by entering its option number."
+                    + RESET_TEXT_BOLD_FAINT + RESET_TEXT_COLOR);
             case 4 -> {
-                System.out.print("Goodbye.");
+                printResult("Goodbye.");
                 System.exit(0);
             }
             default -> System.out.println("Invalid option. Please try again.");
@@ -48,12 +52,12 @@ public class PreloginMenu {
             String username = MenuManager.getValidStringInput("Enter username: ");
             String password = MenuManager.getValidStringInput("Enter password: ");
             AuthData authData = serverFacade.login(username, password);
-            System.out.println("Login Successful for " + username + "!");
+            printResult("Login Successful for " + username + "!");
             loggedInUsername = authData.username();
             loggedInAuth = authData.authToken();
             return MenuState.POSTLOGIN;
         } catch (IOException e) {
-            System.out.println("Login failed: " + e.getMessage());
+            MenuManager.printError("Login", e.getMessage());
             return MenuState.PRELOGIN;
         }
     }
@@ -70,14 +74,14 @@ public class PreloginMenu {
             String password = MenuManager.getValidStringInput("Choose a password (no spaces, max 30 characters): ");
             String email = MenuManager.getValidStringInput("Enter your email (no spaces, max 30 characters): ");
             serverFacade.register(username, password, email);
-            System.out.println("Registration Successful!");
+            printResult("Registration Successful!");
             // Login after successful registration
             AuthData authData = serverFacade.login(username, password);
             loggedInUsername = authData.username();
             loggedInAuth = authData.authToken();
             return MenuState.POSTLOGIN;
         } catch (IOException e) {
-            System.out.println("Registration failed: " + e.getMessage());
+            MenuManager.printError("Registration", e.getMessage());
             return MenuState.PRELOGIN;
         }
     }

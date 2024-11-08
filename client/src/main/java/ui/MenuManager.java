@@ -3,6 +3,9 @@ package ui;
 import java.io.IOException;
 import java.util.Scanner;
 
+import static ui.EscapeSequences.*;
+import static ui.EscapeSequences.RESET_TEXT_BOLD_FAINT;
+
 public class MenuManager {
 
     public static ServerFacade serverFacade;
@@ -12,9 +15,9 @@ public class MenuManager {
     public static String loggedInAuth = null;
 
     private MenuState currentState;
-    private PreloginMenu preloginMenu;
-    private PostloginMenu postloginMenu;
-    private GameMenu gameMenu;
+    private final PreloginMenu preloginMenu;
+    private final PostloginMenu postloginMenu;
+    private final GameMenu gameMenu;
 
 
     public MenuManager(String url) {
@@ -90,5 +93,22 @@ public class MenuManager {
         }
 
         return input;
+    }
+
+    public static void printError(String operationName, String message) {
+        System.out.println("\n" + operationName + " failed: " +
+                SET_TEXT_COLOR_RED + SET_TEXT_BOLD +
+                message +
+                RESET_TEXT_COLOR + RESET_TEXT_BOLD_FAINT);
+    }
+
+    public static void printNoGamesMessage() {
+        System.out.println("\n" + SET_TEXT_COLOR_YELLOW + SET_TEXT_BOLD +
+                "There are no current games. Create a game to get started." +
+                RESET_TEXT_COLOR + RESET_TEXT_BOLD_FAINT);
+    }
+
+    public static void printResult(String result) {
+        System.out.println("\n" + SET_TEXT_COLOR_LG + SET_TEXT_BOLD + result + RESET_TEXT_BOLD_FAINT + RESET_TEXT_COLOR);
     }
 }
