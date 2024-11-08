@@ -1,8 +1,13 @@
 package ui;
 
+import java.io.IOException;
+import java.util.Scanner;
+
 public class MenuManager {
 
-    public final ServerFacade serverFacade;
+    public static ServerFacade serverFacade;
+    public static Scanner scanner = new Scanner(System.in);
+    private static final int MAX_LENGTH = 30;
 
     private MenuState currentState;
     private PreloginMenu preloginMenu;
@@ -19,7 +24,7 @@ public class MenuManager {
     }
 
 
-    public void run() {
+    public void run() throws IOException {
         while (currentState != MenuState.QUIT) {
             switch (currentState) {
                 case PRELOGIN:
@@ -33,5 +38,55 @@ public class MenuManager {
                     break;
             }
         }
+    }
+
+    public static int getValidOption(int numOptions) {
+        int option = -1;
+
+        while (true) {
+            System.out.print("Enter a number between 1 and " + numOptions + ": ");
+            String input = scanner.nextLine();
+
+            try {
+                option = Integer.parseInt(input.trim());
+
+                if (option >= 1 && option <= numOptions) {
+                    break;
+                } else {
+                    System.out.print(option + " is not an available option. ");
+                }
+            } catch (NumberFormatException e) {
+                System.out.print("Invalid input. ");
+            }
+        }
+
+        return option;
+    }
+
+
+    public static String getValidStringInput(String prompt) {
+        String input;
+
+        while (true) {
+            System.out.print(prompt);
+            input = scanner.nextLine().trim();  // Read and trim the input
+
+            // Check if input is empty
+            if (input.isEmpty()) {
+                System.out.println("Input cannot be empty. Please try again.");
+            }
+            // Check if input exceeds the maximum length
+            else if (input.length() > MAX_LENGTH) {
+                System.out.println("Input cannot exceed " + MAX_LENGTH + " characters. Please try again.");
+            }
+            // Check if input contains spaces
+            else if (input.contains(" ")) {
+                System.out.println("Input cannot contain spaces. Please try again.");
+            } else {
+                break;  // Input is valid, exit loop
+            }
+        }
+
+        return input;
     }
 }
