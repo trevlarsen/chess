@@ -1,5 +1,7 @@
 package ui;
 
+import static ui.MenuManager.*;
+
 public class GameMenu {
 
     private final int numGameOptions = 2;
@@ -13,13 +15,16 @@ public class GameMenu {
 
     public MenuState run() {
         MenuState result = MenuState.GAME;
-        System.out.print(gameMenu);
-        int input = MenuManager.getValidOption(numGameOptions);
+        printGameMenu();
+        int input = getValidOption(2);
 
-        if (input == 1) {
-            result = MenuState.POSTLOGIN;
-        } else {
-            System.out.print("Invalid option. Please try again.");
+        switch (input) {
+            case 1 -> result = MenuState.POSTLOGIN;
+            case 2 -> {
+                printResult("Goodbye.");
+                System.exit(0);
+            }
+            default -> System.out.println("Invalid option. Please try again.");
         }
         return result;
     }

@@ -1,6 +1,9 @@
 package ui;
 
+import model.GameData;
+
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 import static ui.EscapeSequences.*;
@@ -13,6 +16,7 @@ public class MenuManager {
     private static final int MAX_LENGTH = 30;
     public static String loggedInUsername = null;
     public static String loggedInAuth = null;
+    public static ArrayList<GameData> listedGames = new ArrayList<>();
 
     private MenuState currentState;
     private final PreloginMenu preloginMenu;
@@ -31,22 +35,18 @@ public class MenuManager {
 
     public void run() throws IOException {
         while (currentState != MenuState.QUIT) {
-            switch (currentState) {
-                case PRELOGIN:
-                    currentState = preloginMenu.run();
-                    break;
-                case POSTLOGIN:
-                    currentState = postloginMenu.run();
-                    break;
-                case GAME:
-                    currentState = gameMenu.run();
-                    break;
-            }
+            currentState = switch (currentState) {
+                case PRELOGIN -> preloginMenu.run();
+                case POSTLOGIN -> postloginMenu.run();
+                case GAME -> gameMenu.run();
+                default -> MenuState.QUIT;
+            };
         }
+        System.out.println("Goodbye.");
     }
 
     public static int getValidOption(int numOptions) {
-        int option = -1;
+        int option;
 
         while (true) {
             System.out.print("Enter a number between 1 and " + numOptions + ": ");
@@ -110,5 +110,45 @@ public class MenuManager {
 
     public static void printResult(String result) {
         System.out.println("\n" + SET_TEXT_COLOR_LG + SET_TEXT_BOLD + result + RESET_TEXT_BOLD_FAINT + RESET_TEXT_COLOR);
+    }
+
+    public static void printHelp() {
+        System.out.println(SET_TEXT_BOLD + SET_TEXT_COLOR_YELLOW +
+                "\nSelect an option below by entering its option number."
+                + RESET_TEXT_BOLD_FAINT + RESET_TEXT_COLOR);
+    }
+
+    public static void printPreloginMenu() {
+        System.out.println("""
+                \nYou are not logged in. What would you like to do?
+                \t1. Login
+                \t2. Register
+                \t3. Help
+                \t4. Quit
+                """);
+    }
+
+    public static void printPostloginMenu() {
+        System.out.println("""
+                \nYou are logged in. What would you like to do?
+                \t1. Logout
+                \t2. List Games
+                \t3. Create Game
+                \t4. Play Game
+                \t5. Observe Game
+                \t6. Help
+                """);
+    }
+
+    public static void printGameMenu() {
+        System.out.println("""
+                \nGame functionality coming soon!
+                \t1. Go back
+                \t2. Quit
+                """);
+    }
+
+    public static void refreshGames() throws IOException {
+        listedGames = serverFacade.listGames(loggedInAuth);
     }
 }
