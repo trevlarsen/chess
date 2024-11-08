@@ -1,5 +1,6 @@
 package ui;
 
+import static ui.ChessBoardPrinter.tempPrint;
 import static ui.MenuManager.*;
 
 public class GameMenu {
@@ -15,6 +16,7 @@ public class GameMenu {
 
     public MenuState run() {
         MenuState result = MenuState.GAME;
+        tempPrint();
         printGameMenu();
         int input = getValidOption(2);
 

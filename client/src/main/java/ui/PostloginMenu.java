@@ -4,7 +4,6 @@ import chess.ChessGame;
 import model.GameData;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static ui.EscapeSequences.*;
 import static ui.MenuManager.*;
@@ -102,6 +101,7 @@ public class PostloginMenu {
             }
 
             serverFacade.joinGame(playerColor, selectedGame.gameID(), loggedInAuth);
+            currentGame = selectedGame.game();
             printResult("You joined the game '" + selectedGame.gameName() + "' as " + color + ".");
             return MenuState.GAME;
         } catch (IOException e) {
@@ -122,6 +122,7 @@ public class PostloginMenu {
             System.out.println("Which game would you like to observe?");
             int gameIndex = getValidOption(listedGames.size()) - 1;
             GameData selectedGame = listedGames.get(gameIndex);
+            currentGame = selectedGame.game();
 
             printResult("You are now observing the game '" + selectedGame.gameName() + "'.");
             return MenuState.GAME;

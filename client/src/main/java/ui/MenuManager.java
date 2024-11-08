@@ -1,5 +1,6 @@
 package ui;
 
+import chess.ChessGame;
 import model.GameData;
 
 import java.io.IOException;
@@ -16,6 +17,7 @@ public class MenuManager {
     private static final int MAX_LENGTH = 30;
     public static String loggedInUsername = null;
     public static String loggedInAuth = null;
+    public static ChessGame currentGame = null;
     public static ArrayList<GameData> listedGames = new ArrayList<>();
 
     private MenuState currentState;
