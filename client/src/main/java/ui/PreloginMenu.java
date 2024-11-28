@@ -8,6 +8,13 @@ import static ui.MenuManager.*;
 
 public class PreloginMenu {
 
+    private final MenuManager ui;
+
+    // Constructor that accepts MenuManager instance
+    public PreloginMenu(MenuManager ui) {
+        this.ui = ui;
+    }
+
     public MenuState run() throws IOException {
         MenuState result = MenuState.PRELOGIN;
         printPreloginMenu();
@@ -30,10 +37,10 @@ public class PreloginMenu {
         try {
             String username = getValidStringInput("Enter username: ");
             String password = getValidStringInput("Enter password: ");
-            AuthData authData = serverFacade.login(username, password);
+            AuthData authData = ui.serverFacade.login(username, password);
             printResult("Login Successful. Welcome back " + username + "!");
-            loggedInUsername = authData.username();
-            loggedInAuth = authData.authToken();
+            ui.loggedInUsername = authData.username();
+            ui.loggedInAuth = authData.authToken();
             return MenuState.POSTLOGIN;
 
         } catch (IOException e) {
@@ -47,13 +54,13 @@ public class PreloginMenu {
             String username = getValidStringInput("Choose a username (no spaces, max 30 characters): ");
             String password = getValidStringInput("Choose a password (no spaces, max 30 characters): ");
             String email = getValidStringInput("Enter your email (no spaces, max 30 characters): ");
-            serverFacade.register(username, password, email);
+            ui.serverFacade.register(username, password, email);
             printResult("Registration Successful. Welcome " + username + "!");
 
             // Login after successful registration
-            AuthData authData = serverFacade.login(username, password);
-            loggedInUsername = authData.username();
-            loggedInAuth = authData.authToken();
+            AuthData authData = ui.serverFacade.login(username, password);
+            ui.loggedInUsername = authData.username();
+            ui.loggedInAuth = authData.authToken();
             return MenuState.POSTLOGIN;
 
         } catch (IOException e) {

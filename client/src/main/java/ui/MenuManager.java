@@ -12,29 +12,61 @@ import static ui.EscapeSequences.RESET_TEXT_BOLD_FAINT;
 
 public class MenuManager {
 
-    public static ServerFacade serverFacade;
+    public ServerFacade serverFacade;
     public static Scanner scanner = new Scanner(System.in);
     private static final int MAX_LENGTH = 30;
-    public static String loggedInUsername = null;
-    public static String loggedInAuth = null;
-    public static ChessGame currentGame = null;
-    public static ArrayList<GameData> listedGames = new ArrayList<>();
+
+    // Convert these to instance variables
+    public String loggedInUsername = null;
+    public String loggedInAuth = null;
+    public ChessGame currentGame = null;
+    public ArrayList<GameData> listedGames = new ArrayList<>();
 
     private MenuState currentState;
     private final PreloginMenu preloginMenu;
     private final PostloginMenu postloginMenu;
     private final GameMenu gameMenu;
 
-
+    // Constructor
     public MenuManager(String url) {
         serverFacade = new ServerFacade(url);
         currentState = MenuState.PRELOGIN;
-        preloginMenu = new PreloginMenu();
-        postloginMenu = new PostloginMenu();
-        gameMenu = new GameMenu();
+        preloginMenu = new PreloginMenu(this);
+        postloginMenu = new PostloginMenu(this);
+        gameMenu = new GameMenu(currentGame);
     }
 
+    // Getter for loggedInUsername
+    public String getLoggedInUsername() {
+        return loggedInUsername;
+    }
 
+    // Setter for loggedInUsername
+    public void setLoggedInUsername(String loggedInUsername) {
+        this.loggedInUsername = loggedInUsername;
+    }
+
+    // Getter for loggedInAuth
+    public String getLoggedInAuth() {
+        return loggedInAuth;
+    }
+
+    // Setter for loggedInAuth
+    public void setLoggedInAuth(String loggedInAuth) {
+        this.loggedInAuth = loggedInAuth;
+    }
+
+    // Getter for currentGame
+    public ChessGame getCurrentGame() {
+        return currentGame;
+    }
+
+    // Setter for currentGame
+    public void setCurrentGame(ChessGame currentGame) {
+        this.currentGame = currentGame;
+    }
+
+    // Run method
     public void run() throws IOException {
         printWelcome();
         while (currentState != MenuState.QUIT) {
@@ -48,6 +80,7 @@ public class MenuManager {
         System.out.println("Goodbye.");
     }
 
+    // Static methods for validation and printing
     public static int getValidOption(int numOptions) {
         int option;
 
@@ -70,7 +103,6 @@ public class MenuManager {
 
         return option;
     }
-
 
     public static String getValidStringInput(String prompt) {
         String input;
@@ -172,7 +204,7 @@ public class MenuManager {
                 """);
     }
 
-    public static void refreshGames() throws IOException {
+    public void refreshGames() throws IOException {
         listedGames = serverFacade.listGames(loggedInAuth);
     }
 }

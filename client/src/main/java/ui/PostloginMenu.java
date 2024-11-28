@@ -10,6 +10,12 @@ import static ui.MenuManager.*;
 
 public class PostloginMenu {
 
+    private final MenuManager ui;
+
+    // Constructor that accepts MenuManager instance
+    public PostloginMenu(MenuManager ui) {
+        this.ui = ui;
+    }
 
     public MenuState run() {
         MenuState result = MenuState.POSTLOGIN;
@@ -30,7 +36,8 @@ public class PostloginMenu {
 
     private MenuState logout() {
         try {
-            serverFacade.logout(loggedInAuth);
+            // Use the instance variable to access loggedInAuth
+            ui.serverFacade.logout(ui.loggedInAuth);
             printResult("Logout Successful.");
             return MenuState.PRELOGIN;
         } catch (IOException e) {
@@ -41,16 +48,16 @@ public class PostloginMenu {
 
     private void listGames() {
         try {
-            refreshGames();
+            ui.refreshGames();
 
-            if (listedGames.isEmpty()) {
+            if (ui.listedGames.isEmpty()) {
                 printNoGamesMessage();
                 return;
             }
             System.out.println(SET_TEXT_COLOR_BLUE);
             System.out.println("Available Games:");
             int index = 1;
-            for (GameData game : listedGames) {
+            for (GameData game : ui.listedGames) {
                 System.out.printf("%d. '%s' - White: %s, Black: %s\n", index++, game.gameName(),
                         game.whiteUsername(), game.blackUsername());
             }
@@ -63,8 +70,9 @@ public class PostloginMenu {
     private void createGame() {
         try {
             String gameName = getValidStringInput("Enter a name for the new game: ");
-            serverFacade.createGame(gameName, loggedInAuth);
-            var currentGames = serverFacade.listGames(loggedInAuth);
+            // Use the instance variable to access loggedInAuth
+            ui.serverFacade.createGame(gameName, ui.loggedInAuth);
+            var currentGames = ui.serverFacade.listGames(ui.loggedInAuth);
             printResult("Game created with ID: " + currentGames.size());
         } catch (IOException e) {
             printError("Create Game", e.getMessage());
@@ -73,16 +81,16 @@ public class PostloginMenu {
 
     private MenuState playGame() {
         try {
-            refreshGames();
+            ui.refreshGames();
 
-            if (listedGames.isEmpty()) {
+            if (ui.listedGames.isEmpty()) {
                 printNoGamesMessage();
                 return MenuState.POSTLOGIN;
             }
 
             System.out.println("Which game would you like to play?");
-            int gameIndex = getValidOption(listedGames.size()) - 1;
-            GameData selectedGame = listedGames.get(gameIndex);
+            int gameIndex = getValidOption(ui.listedGames.size()) - 1;
+            GameData selectedGame = ui.listedGames.get(gameIndex);
 
             String color;
             while (true) {
@@ -100,8 +108,9 @@ public class PostloginMenu {
                 playerColor = ChessGame.TeamColor.BLACK;
             }
 
-            serverFacade.joinGame(playerColor, selectedGame.gameID(), loggedInAuth);
-            currentGame = selectedGame.game();
+            // Use the instance variable to access loggedInAuth
+            ui.serverFacade.joinGame(playerColor, selectedGame.gameID(), ui.loggedInAuth);
+            ui.currentGame = selectedGame.game();
             printResult("You joined the game '" + selectedGame.gameName() + "' as " + color + ".");
             return MenuState.GAME;
         } catch (IOException e) {
@@ -112,17 +121,17 @@ public class PostloginMenu {
 
     private MenuState observeGame() {
         try {
-            refreshGames();
+            ui.refreshGames();
 
-            if (listedGames.isEmpty()) {
+            if (ui.listedGames.isEmpty()) {
                 printNoGamesMessage();
                 return MenuState.POSTLOGIN;
             }
 
             System.out.println("Which game would you like to observe?");
-            int gameIndex = getValidOption(listedGames.size()) - 1;
-            GameData selectedGame = listedGames.get(gameIndex);
-            currentGame = selectedGame.game();
+            int gameIndex = getValidOption(ui.listedGames.size()) - 1;
+            GameData selectedGame = ui.listedGames.get(gameIndex);
+            ui.currentGame = selectedGame.game();
 
             printResult("You are now observing the game '" + selectedGame.gameName() + "'.");
             return MenuState.GAME;

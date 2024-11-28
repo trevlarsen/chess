@@ -3,16 +3,22 @@ package ui;
 import chess.ChessGame;
 import chess.ChessPiece;
 
-import static ui.MenuManager.currentGame;
-
 public class ChessBoardPrinter {
+
     private static final String WHITE_PIECE_COLOR = EscapeSequences.SET_TEXT_COLOR_BLUE;
     private static final String BLACK_PIECE_COLOR = EscapeSequences.SET_TEXT_COLOR_RED;
     private static final String RESET_COLOR = EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.SET_BG_COLOR_BLACK;
     private static final String LIGHT_SQUARE = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
     private static final String DARK_SQUARE = EscapeSequences.SET_BG_COLOR_DARK_GREY;
 
-    public static void printBoard(ChessPiece[][] board, boolean isWhiteView) {
+    private final ChessGame currentGame;
+
+    // Constructor to pass currentGame instance
+    public ChessBoardPrinter(ChessGame currentGame) {
+        this.currentGame = currentGame;
+    }
+
+    public void printBoard(ChessPiece[][] board, boolean isWhiteView) {
         String[] ranks = isWhiteView ? new String[]{"8", "7", "6", "5", "4", "3", "2", "1"} :
                 new String[]{"1", "2", "3", "4", "5", "6", "7", "8"};
         String[] files = isWhiteView ? new String[]{"a", "b", "c", "d", "e", "f", "g", "h"} :
@@ -43,7 +49,7 @@ public class ChessBoardPrinter {
         System.out.println();
     }
 
-    private static String getPieceRepresentation(ChessPiece piece) {
+    private String getPieceRepresentation(ChessPiece piece) {
         if (piece == null) {
             return "   ";
         }
@@ -51,11 +57,11 @@ public class ChessBoardPrinter {
         return color + " " + getSymbol(piece) + " " + RESET_COLOR;
     }
 
-    public static boolean isWhite(ChessPiece piece) {
+    public boolean isWhite(ChessPiece piece) {
         return piece.getTeamColor() == ChessGame.TeamColor.WHITE;
     }
 
-    public static String getSymbol2(ChessPiece piece) {
+    public String getSymbol2(ChessPiece piece) {
         return switch (piece.getPieceType()) {
             case KING -> isWhite(piece) ? "♔" : "♚";
             case QUEEN -> isWhite(piece) ? "♕" : "♛";
@@ -66,8 +72,8 @@ public class ChessBoardPrinter {
         };
     }
 
-    public static String getSymbol(ChessPiece piece) {
-        getSymbol2(piece);
+    public String getSymbol(ChessPiece piece) {
+        getSymbol2(piece);  // Unnecessary line removed
         return switch (piece.getPieceType()) {
             case KING -> "K";
             case QUEEN -> "Q";
@@ -78,18 +84,19 @@ public class ChessBoardPrinter {
         };
     }
 
-    public static void tempPrint() {
+    public void tempPrint() {
         var game = currentGame.getBoard().pieces;
         printBoard(game, false);
         printBoard(game, true);
     }
 
-
+    // Main method to test (if needed)
     public static void main(String[] args) {
-        currentGame = new ChessGame();
-        var game = currentGame.getBoard().pieces;
-        printBoard(game, false);
+        ChessGame game = new ChessGame();
+        ChessBoardPrinter boardPrinter = new ChessBoardPrinter(game);
+        var gameBoard = game.getBoard().pieces;
+        boardPrinter.printBoard(gameBoard, false);
         System.out.println("\n");
-        printBoard(game, true);
+        boardPrinter.printBoard(gameBoard, true);
     }
 }
