@@ -12,7 +12,6 @@ public class PostloginMenu {
 
     private final MenuManager ui;
 
-    // Constructor that accepts MenuManager instance
     public PostloginMenu(MenuManager ui) {
         this.ui = ui;
     }
@@ -36,7 +35,6 @@ public class PostloginMenu {
 
     private MenuState logout() {
         try {
-            // Use the instance variable to access loggedInAuth
             ui.serverFacade.logout(ui.loggedInAuth);
             printResult("Logout Successful.");
             return MenuState.PRELOGIN;
@@ -70,7 +68,6 @@ public class PostloginMenu {
     private void createGame() {
         try {
             String gameName = getValidStringInput("Enter a name for the new game: ");
-            // Use the instance variable to access loggedInAuth
             ui.serverFacade.createGame(gameName, ui.loggedInAuth);
             var currentGames = ui.serverFacade.listGames(ui.loggedInAuth);
             printResult("Game created with ID: " + currentGames.size());
@@ -108,7 +105,6 @@ public class PostloginMenu {
                 playerColor = ChessGame.TeamColor.BLACK;
             }
 
-            // Use the instance variable to access loggedInAuth
             ui.serverFacade.joinGame(playerColor, selectedGame.gameID(), ui.loggedInAuth);
             ui.currentGame = selectedGame.game();
             printResult("You joined the game '" + selectedGame.gameName() + "' as " + color + ".");

@@ -16,7 +16,6 @@ public class MenuManager {
     public static Scanner scanner = new Scanner(System.in);
     private static final int MAX_LENGTH = 30;
 
-    // Convert these to instance variables
     public String loggedInUsername = null;
     public String loggedInAuth = null;
     public ChessGame currentGame = null;
@@ -26,47 +25,18 @@ public class MenuManager {
     private final PreloginMenu preloginMenu;
     private final PostloginMenu postloginMenu;
     private final GameMenu gameMenu;
+    public final ChessBoardPrinter boardPrinter;
 
-    // Constructor
     public MenuManager(String url) {
         serverFacade = new ServerFacade(url);
         currentState = MenuState.PRELOGIN;
         preloginMenu = new PreloginMenu(this);
         postloginMenu = new PostloginMenu(this);
-        gameMenu = new GameMenu(currentGame);
+        gameMenu = new GameMenu(this);
+        boardPrinter = new ChessBoardPrinter(this);
     }
 
-    // Getter for loggedInUsername
-    public String getLoggedInUsername() {
-        return loggedInUsername;
-    }
 
-    // Setter for loggedInUsername
-    public void setLoggedInUsername(String loggedInUsername) {
-        this.loggedInUsername = loggedInUsername;
-    }
-
-    // Getter for loggedInAuth
-    public String getLoggedInAuth() {
-        return loggedInAuth;
-    }
-
-    // Setter for loggedInAuth
-    public void setLoggedInAuth(String loggedInAuth) {
-        this.loggedInAuth = loggedInAuth;
-    }
-
-    // Getter for currentGame
-    public ChessGame getCurrentGame() {
-        return currentGame;
-    }
-
-    // Setter for currentGame
-    public void setCurrentGame(ChessGame currentGame) {
-        this.currentGame = currentGame;
-    }
-
-    // Run method
     public void run() throws IOException {
         printWelcome();
         while (currentState != MenuState.QUIT) {
@@ -80,7 +50,7 @@ public class MenuManager {
         System.out.println("Goodbye.");
     }
 
-    // Static methods for validation and printing
+
     public static int getValidOption(int numOptions) {
         int option;
 

@@ -10,12 +10,10 @@ public class ChessBoardPrinter {
     private static final String RESET_COLOR = EscapeSequences.RESET_TEXT_COLOR + EscapeSequences.SET_BG_COLOR_BLACK;
     private static final String LIGHT_SQUARE = EscapeSequences.SET_BG_COLOR_LIGHT_GREY;
     private static final String DARK_SQUARE = EscapeSequences.SET_BG_COLOR_DARK_GREY;
+    private final MenuManager ui;
 
-    private final ChessGame currentGame;
-
-    // Constructor to pass currentGame instance
-    public ChessBoardPrinter(ChessGame currentGame) {
-        this.currentGame = currentGame;
+    public ChessBoardPrinter(MenuManager ui) {
+        this.ui = ui;
     }
 
     public void printBoard(ChessPiece[][] board, boolean isWhiteView) {
@@ -61,19 +59,19 @@ public class ChessBoardPrinter {
         return piece.getTeamColor() == ChessGame.TeamColor.WHITE;
     }
 
-    public String getSymbol2(ChessPiece piece) {
-        return switch (piece.getPieceType()) {
-            case KING -> isWhite(piece) ? "♔" : "♚";
-            case QUEEN -> isWhite(piece) ? "♕" : "♛";
-            case ROOK -> isWhite(piece) ? "♖" : "♜";
-            case BISHOP -> isWhite(piece) ? "♗" : "♝";
-            case KNIGHT -> isWhite(piece) ? "♘" : "♞";
-            case PAWN -> isWhite(piece) ? "♙" : "♟";
-        };
-    }
+//    public String getSymbol2(ChessPiece piece) {
+//        return switch (piece.getPieceType()) {
+//            case KING -> isWhite(piece) ? "♔" : "♚";
+//            case QUEEN -> isWhite(piece) ? "♕" : "♛";
+//            case ROOK -> isWhite(piece) ? "♖" : "♜";
+//            case BISHOP -> isWhite(piece) ? "♗" : "♝";
+//            case KNIGHT -> isWhite(piece) ? "♘" : "♞";
+//            case PAWN -> isWhite(piece) ? "♙" : "♟";
+//        };
+//    }
 
     public String getSymbol(ChessPiece piece) {
-        getSymbol2(piece);  // Unnecessary line removed
+//        getSymbol2(piece);  // Unnecessary line removed
         return switch (piece.getPieceType()) {
             case KING -> "K";
             case QUEEN -> "Q";
@@ -85,18 +83,18 @@ public class ChessBoardPrinter {
     }
 
     public void tempPrint() {
-        var game = currentGame.getBoard().pieces;
+        var game = ui.currentGame.getBoard().pieces;
         printBoard(game, false);
         printBoard(game, true);
     }
 
     // Main method to test (if needed)
-    public static void main(String[] args) {
-        ChessGame game = new ChessGame();
-        ChessBoardPrinter boardPrinter = new ChessBoardPrinter(game);
-        var gameBoard = game.getBoard().pieces;
-        boardPrinter.printBoard(gameBoard, false);
-        System.out.println("\n");
-        boardPrinter.printBoard(gameBoard, true);
-    }
+//    public static void main(String[] args) {
+//        ChessGame game = new ChessGame();
+//        ChessBoardPrinter boardPrinter = new ChessBoardPrinter();
+//        var gameBoard = game.getBoard().pieces;
+//        boardPrinter.printBoard(gameBoard, false);
+//        System.out.println("\n");
+//        boardPrinter.printBoard(gameBoard, true);
+//    }
 }
