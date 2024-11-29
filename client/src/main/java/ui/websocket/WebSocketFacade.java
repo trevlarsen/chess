@@ -48,6 +48,7 @@ public class WebSocketFacade extends Endpoint {
     public void onOpen(Session session, EndpointConfig endpointConfig) {
     }
 
+    // Receiving functions
     public void loadGame(String serverMessage) {
         LoadGameMessage loadGame = new Gson().fromJson(serverMessage, LoadGameMessage.class);
         notificationHandler.loadGame(loadGame);
@@ -63,5 +64,30 @@ public class WebSocketFacade extends Endpoint {
         notificationHandler.notify(notification);
     }
 
+    // Sending functions
+//    public void joinPlayer(String authToken, int gameID, ChessGame.TeamColor teamColor) throws IOException {
+//        var command = new JoinPlayer(authToken, gameID, teamColor);
+//        this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//    }
+//
+//    public void joinObserver(String authToken, int gameID) throws IOException {
+//        var command = new JoinObserver(authToken, gameID);
+//        this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//    }
+//
+//    public void makeMove(String authToken, int gameID, ChessMove move) throws IOException {
+//        var command = new MakeMove(authToken, gameID, move);
+//        this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//    }
+//
+//    public void resignGame(String authToken, int gameID) throws IOException {
+//        var command = new Resign(authToken, gameID);
+//        this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//    }
+//
+//    public void leaveGame(String authToken, int gameID) throws IOException {
+//        var command = new Leave(authToken, gameID);
+//        this.session.getBasicRemote().sendText(new Gson().toJson(command));
+//    }
 
 }

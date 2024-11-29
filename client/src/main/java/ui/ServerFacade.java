@@ -5,19 +5,31 @@ import java.net.*;
 import java.util.ArrayList;
 
 import chess.ChessGame;
+import chess.ChessMove;
 import com.google.gson.Gson;
 import model.AuthData;
 import model.GameData;
 import model.UserData;
 import model.requests.*;
 import model.responses.*;
+import ui.websocket.NotificationHandler;
+import ui.websocket.WebSocketFacade;
+
+import static chess.ChessGame.TeamColor.BLACK;
+import static chess.ChessGame.TeamColor.WHITE;
 
 public class ServerFacade {
 
     private final String serverUrl;
+    private final WebSocketFacade ws;
 
-    public ServerFacade(String url) {
+    public ServerFacade(String url, NotificationHandler notificationHandler, boolean testing) throws IOException {
         serverUrl = url;
+        if (testing) {
+            ws = null;
+        } else {
+            ws = new WebSocketFacade(url, notificationHandler);
+        }
     }
 
 
@@ -45,6 +57,7 @@ public class ServerFacade {
         return createGameResponse.gameID();
     }
 
+    // Remove this when modified it to join as player or observer with websocket
     public void joinGame(ChessGame.TeamColor playerColor, Integer gameID, String authToken) throws IOException {
         var path = "/game";
         var joinGameRequest = new JoinGameRequest(playerColor, gameID);
@@ -60,6 +73,18 @@ public class ServerFacade {
     public void clear() throws IOException {
         var path = "/db";
         this.makeRequest("DELETE", path, null, null, null);
+    }
+
+    public void makeMove(String authToken, int gameID, ChessMove move) throws IOException {
+//        ws.makeMove(authToken, gameID, move);
+    }
+
+    public void leaveGame(String authToken, int gameID) throws IOException {
+//        ws.leaveGame(authToken, gameID);
+    }
+
+    public void resignGame(String authToken, int gameID) throws IOException {
+//        ws.resignGame(authToken, gameID);
     }
 
     private <T> T makeRequest(String method, String path, Object request, String authToken, Class<T> responseClass) throws IOException {

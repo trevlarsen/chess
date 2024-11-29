@@ -4,6 +4,7 @@ import chess.ChessGame;
 import model.responses.ErrorResponse;
 import org.junit.jupiter.api.*;
 import server.Server;
+import ui.MenuManager;
 import ui.ServerFacade;
 
 import java.io.IOException;
@@ -16,11 +17,12 @@ public class ServerFacadeTests {
     static ServerFacade facade;
 
     @BeforeAll
-    public static void init() {
+    public static void init() throws IOException {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        facade = new ServerFacade("http://localhost:" + port);
+        var manager = new MenuManager("http://localhost:" + port, true);
+        facade = manager.serverFacade;
     }
 
     @AfterAll

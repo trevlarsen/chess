@@ -2,6 +2,10 @@ package ui;
 
 import chess.ChessGame;
 import model.GameData;
+import ui.websocket.NotificationHandler;
+import websocket.messages.ErrorMessage;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.Notification;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,7 +14,7 @@ import java.util.Scanner;
 import static ui.EscapeSequences.*;
 import static ui.EscapeSequences.RESET_TEXT_BOLD_FAINT;
 
-public class MenuManager {
+public class MenuManager implements NotificationHandler {
 
     public ServerFacade serverFacade;
     public static Scanner scanner = new Scanner(System.in);
@@ -27,8 +31,8 @@ public class MenuManager {
     private final GameMenu gameMenu;
     public final ChessBoardPrinter boardPrinter;
 
-    public MenuManager(String url) {
-        serverFacade = new ServerFacade(url);
+    public MenuManager(String url, boolean testing) throws IOException {
+        serverFacade = new ServerFacade(url, this, testing);
         currentState = MenuState.PRELOGIN;
         preloginMenu = new PreloginMenu(this);
         postloginMenu = new PostloginMenu(this);
@@ -180,5 +184,24 @@ public class MenuManager {
 
     public void refreshGames() throws IOException {
         listedGames = serverFacade.listGames(loggedInAuth);
+    }
+
+    @Override
+    public void notify(Notification notification) {
+        System.out.println(SET_TEXT_COLOR_GREEN + SET_BG_COLOR_BLACK + "\n" + notification.getMessage());
+//        client.printPrompt();
+    }
+
+    @Override
+    public void loadGame(LoadGameMessage loadGame) {
+//        client.setBoard(new Gson().fromJson(loadGame.game, ChessGame.class));
+//        client.drawGameUI();
+//        client.printPrompt();
+    }
+
+    @Override
+    public void error(ErrorMessage error) {
+        System.out.println(SET_TEXT_COLOR_BLUE + SET_BG_COLOR_BLACK + error.getErrorMessage());
+//        client.printPrompt();
     }
 }
