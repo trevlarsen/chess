@@ -169,8 +169,12 @@ public class MenuManager {
     public static void printGameMenu() {
         System.out.println("""
                 \nGame functionality coming soon!
-                \t1. Go back
-                \t2. Quit
+                \t1. Make Move
+                \t2. Highlight Legal Moves
+                \t3. Resign
+                \t4. Leave Game
+                \t5. Redraw Board
+                \t6. Help
                 """);
     }
 
