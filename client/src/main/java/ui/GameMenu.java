@@ -2,19 +2,13 @@ package ui;
 
 import chess.ChessGame;
 
+import java.awt.*;
+
 import static ui.MenuManager.*;
 
 public class GameMenu {
 
-    private final int numGameOptions = 2;
     private final MenuManager ui;
-
-
-    private final String gameMenu = """
-            \nGame functionality coming soon!
-            \t1. Go back
-            \t2. Quit
-            """;
 
     public GameMenu(MenuManager ui) {
         this.ui = ui;
@@ -24,20 +18,38 @@ public class GameMenu {
         MenuState result = MenuState.GAME;
         ui.boardPrinter.tempPrint();
         printGameMenu();
-        int input = getValidOption(2);
+        int input = getValidOption(6);
 
         switch (input) {
-            case 1 -> result = MenuState.POSTLOGIN;
-            case 2 -> {
-                printResult("Goodbye.");
-                System.exit(0);
-            }
+            case 1 -> this.makeMove();
+            case 2 -> this.highlightMoves();
+            case 3 -> this.resign();
+            case 4 -> result = this.leaveGame();
+            case 5 -> this.redrawBoard();
+            case 6 -> printHelp();
             default -> System.out.println("Invalid option. Please try again.");
         }
         return result;
     }
 
-    private void printGameMenu() {
-        System.out.println(gameMenu);
+    private void makeMove() {
+        System.out.println("makeMove functionality yet to be implemented");
+    }
+
+    private void highlightMoves() {
+        System.out.println("highlightMoves moves functionality yet to be implemented");
+    }
+
+    private void resign() {
+        System.out.println("resign functionality yet to be implemented");
+    }
+
+    private MenuState leaveGame() {
+        System.out.println("leaveGame functionality yet to be implemented");
+        return MenuState.POSTLOGIN;
+    }
+
+    private void redrawBoard() {
+        System.out.println("redrawBoard moves functionality yet to be implemented");
     }
 }
