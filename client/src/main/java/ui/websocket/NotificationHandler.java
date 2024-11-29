@@ -1,4 +1,11 @@
 package ui.websocket;
 
-public class NotificationHandler {
+import websocket.messages.*;
+
+public interface NotificationHandler {
+    void notify(Notification message);
+
+    void loadGame(LoadGameMessage loadGameMessage);
+
+    void error(ErrorMessage error);
 }
