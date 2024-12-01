@@ -5,7 +5,6 @@ import chess.ChessPosition;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 import static ui.MenuManager.*;
 
@@ -44,19 +43,14 @@ public class GameMenu {
     private void highlightMoves() throws IOException {
         System.out.println("Highlight moves for piece (Enter coordinate, for example a1): ");
 
-        // Prompt until valid input is given
         String input = getValidCoordinate();
 
-        // Convert the input coordinate to board position (row, column)
         ChessPosition start = convertCoordinateToPosition(input);
         System.out.println(start);
 
-        // Refresh the game and get valid moves for the selected piece
         ui.refreshGames();
         var game = ui.listedGames.get(ui.currentGameIndex).game();
 
-        // Reassign the moves (assuming you have an appropriate field for this)
-        // Example: moves = validMoves;
         moves = (ArrayList<ChessMove>) game.validMoves(start);
     }
 
@@ -64,8 +58,7 @@ public class GameMenu {
         String input = "";
         boolean isValid = false;
         while (!isValid) {
-            input = scanner.nextLine().trim().toLowerCase();  // Assuming ui.getUserInput() gets user input
-            // Validate input: exactly 2 characters, first is letter a-h, second is digit 1-8
+            input = scanner.nextLine().trim().toLowerCase();
             if (input.length() == 2 && input.matches("[a-h][1-8]")) {
                 isValid = true;
             } else {

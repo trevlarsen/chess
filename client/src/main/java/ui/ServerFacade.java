@@ -15,21 +15,13 @@ import model.responses.*;
 import ui.websocket.NotificationHandler;
 import ui.websocket.WebSocketFacade;
 
-import static chess.ChessGame.TeamColor.BLACK;
-import static chess.ChessGame.TeamColor.WHITE;
-
 public class ServerFacade {
 
     private final String serverUrl;
     private final WebSocketFacade ws;
 
-    public ServerFacade(String url, NotificationHandler notificationHandler, boolean testing) throws IOException {
+    public ServerFacade(String url, NotificationHandler notificationHandler) throws IOException {
         serverUrl = url;
-//        if (testing) {
-//            ws = null;
-//        } else {
-//            ws = new WebSocketFacade(url, notificationHandler);
-//        }
         ws = new WebSocketFacade(url, notificationHandler);
     }
 

@@ -21,7 +21,7 @@ public class ServerFacadeTests {
         server = new Server();
         var port = server.run(0);
         System.out.println("Started test HTTP server on " + port);
-        var manager = new MenuManager("http://localhost:" + port, true);
+        var manager = new MenuManager("http://localhost:" + port);
         facade = manager.serverFacade;
     }
 

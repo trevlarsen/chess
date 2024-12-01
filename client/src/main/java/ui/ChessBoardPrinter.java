@@ -133,17 +133,17 @@ public class ChessBoardPrinter {
         printBoard(game, color == ChessGame.TeamColor.WHITE, moves);
     }
 
-    //     Main method to test (if needed)
-//    public static void main(String[] args) throws IOException {
-//        ChessGame game = new ChessGame();
-//        var ui = new MenuManager("Hello", true);
-//        ChessBoardPrinter boardPrinter = new ChessBoardPrinter(ui);
-//        var gameBoard = game.getBoard().pieces;
-//        boardPrinter.printBoard(gameBoard, false, new ArrayList<>());
-//        System.out.println("\n");
-//        var lis = new ArrayList<ChessMove>();
-//        lis.add(new ChessMove(new ChessPosition(2, 2), new ChessPosition(0, 0), null));
-//        boardPrinter.printBoard(gameBoard, true, lis);
-//
-//    }
+    // Main method to test (if needed)
+    public static void the(String[] args) throws IOException {
+        ChessGame game = new ChessGame();
+        var ui = new MenuManager("Hello");
+        ChessBoardPrinter boardPrinter = new ChessBoardPrinter(ui);
+        var gameBoard = game.getBoard().pieces;
+        boardPrinter.printBoard(gameBoard, false, new ArrayList<>());
+        System.out.println("\n");
+        var lis = new ArrayList<ChessMove>();
+        lis.add(new ChessMove(new ChessPosition(2, 2), new ChessPosition(0, 0), null));
+        boardPrinter.printBoard(gameBoard, true, lis);
+
+    }
 }

@@ -33,8 +33,8 @@ public class MenuManager implements NotificationHandler {
     private final GameMenu gameMenu;
     public final ChessBoardPrinter boardPrinter;
 
-    public MenuManager(String url, boolean testing) throws IOException {
-        serverFacade = new ServerFacade(url, this, testing);
+    public MenuManager(String url) throws IOException {
+        serverFacade = new ServerFacade(url, this);
         currentState = MenuState.PRELOGIN;
         preloginMenu = new PreloginMenu(this);
         postloginMenu = new PostloginMenu(this);
@@ -191,20 +191,15 @@ public class MenuManager implements NotificationHandler {
     @Override
     public void notify(Notification notification) {
         System.out.println(notification.getMessage());
-//        client.printPrompt();
     }
 
     @Override
     public void loadGame(LoadGame loadGame) {
         System.out.println("Received game");
-//        client.setBoard(new Gson().fromJson(loadGame.game, ChessGame.class));
-//        client.drawGameUI();
-//        client.printPrompt();
     }
 
     @Override
     public void error(ErrorMessage error) {
         System.out.println(error.getErrorMessage());
-//        client.printPrompt();
     }
 }
