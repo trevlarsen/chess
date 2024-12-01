@@ -4,15 +4,14 @@ import org.eclipse.jetty.websocket.api.Session;
 import websocket.messages.*;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 public class ConnectionManager {
-    public final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
+    private final ConcurrentHashMap<String, Connection> connections = new ConcurrentHashMap<>();
 
     public void add(String authToken, Session session, int gameID) {
-        var connection = new Connection(authToken, session, gameID);
-        connections.put(authToken, connection);
+        connections.put(authToken, new Connection(authToken, session, gameID));
     }
 
     public void remove(String authToken) {
@@ -20,56 +19,33 @@ public class ConnectionManager {
     }
 
     public void broadcast(String message, int gameID) throws IOException {
-        var removeList = new ArrayList<Connection>();
-        for (var c : connections.values()) {
-            if (c.session.isOpen()) {
-                if (gameID == c.gameID) {
-                    c.send(message);
-                }
-            } else {
-                removeList.add(c);
-            }
-        }
-
-        // Clean up any connections that were left open.
-        for (var c : removeList) {
-            connections.remove(c.authToken);
-        }
+        sendToConnections(message, c -> c.session.isOpen() && c.gameID == gameID);
     }
 
     public void notifyPlayer(String authToken, String message) throws IOException {
-        var removeList = new ArrayList<Connection>();
-        for (var c : connections.values()) {
-            if (c.session.isOpen()) {
-                if (c.authToken.equals(authToken)) {
-                    c.send(message);
-                }
-            } else {
-                removeList.add(c);
-            }
-        }
-
-        // Clean up any connections that were left open.
-        for (var c : removeList) {
-            connections.remove(c.authToken);
-        }
+        sendToConnections(message, c -> c.session.isOpen() && c.authToken.equals(authToken));
     }
 
     public void notifyOthers(String excludeAuthToken, String message, int gameID) throws IOException {
-        var removeList = new ArrayList<Connection>();
-        for (var c : connections.values()) {
-            if (c.session.isOpen()) {
-                if (!c.authToken.equals(excludeAuthToken) && gameID == c.gameID) {
-                    c.send(message);
-                }
-            } else {
-                removeList.add(c);
-            }
-        }
+        sendToConnections(message, c -> c.session.isOpen() && !c.authToken.equals(excludeAuthToken) && c.gameID == gameID);
+    }
 
-        // Clean up any connections that were left open.
-        for (var c : removeList) {
-            connections.remove(c.authToken);
-        }
+    private void sendToConnections(String message, java.util.function.Predicate<Connection> filter) throws IOException {
+        var removeList = connections.values().stream()
+                .filter(c -> !c.session.isOpen())
+                .collect(Collectors.toList());
+
+        connections.values().stream()
+                .filter(filter)
+                .forEach(c -> {
+                    try {
+                        c.send(message);
+                    } catch (IOException e) {
+                        removeList.add(c); // Mark for removal if send fails
+                    }
+                });
+
+        // Remove closed or failed connections
+        removeList.forEach(c -> connections.remove(c.authToken));
     }
 }
