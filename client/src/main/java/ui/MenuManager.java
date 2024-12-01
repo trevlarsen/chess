@@ -3,7 +3,6 @@ package ui;
 import chess.ChessGame;
 import model.GameData;
 import ui.websocket.NotificationHandler;
-import websocket.messages.Error;
 import websocket.messages.ErrorMessage;
 import websocket.messages.LoadGame;
 import websocket.messages.Notification;

@@ -58,14 +58,10 @@ public class ServerFacade {
     }
 
     public void joinGame(ChessGame.TeamColor playerColor, Integer gameID, String authToken) throws IOException {
-        try {
-            var path = "/game";
-            var joinGameRequest = new JoinGameRequest(playerColor, gameID);
-            this.makeRequest("PUT", path, joinGameRequest, authToken, null);
-            ws.connectPlayer(authToken, gameID);
-        } catch (Exception e) {
-            ws.connectPlayer(authToken, gameID);
-        }
+        var path = "/game";
+        var joinGameRequest = new JoinGameRequest(playerColor, gameID);
+        this.makeRequest("PUT", path, joinGameRequest, authToken, null);
+        ws.connectPlayer(authToken, gameID);
     }
 
     public void observeGame(Integer gameID, String authToken) throws IOException {

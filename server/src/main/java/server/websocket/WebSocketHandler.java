@@ -49,7 +49,7 @@ public class WebSocketHandler {
             String username = service.getUsername(authToken);
             GameData gameData = service.getGame(command.getGameID());
 
-            String type = null;
+            String type;
             if (Objects.equals(gameData.blackUsername(), username)) {
                 type = "BLACK";
             } else if (Objects.equals(gameData.whiteUsername(), username)) {
@@ -57,7 +57,7 @@ public class WebSocketHandler {
             } else {
                 type = "an OBSERVER";
             }
-            var notification = new Notification(username + " has joined as" + type);
+            var notification = new Notification(username + " has joined as " + type);
             sendGame(gameData, session, authToken);
             connections.notifyOthers(authToken, new Gson().toJson(notification), gameData.gameID());
         } catch (Exception e) {
