@@ -1,5 +1,7 @@
 package service;
 
+import chess.ChessGame;
+import dataaccess.DataAccessException;
 import model.GameData;
 import org.mindrot.jbcrypt.BCrypt;
 
@@ -77,5 +79,50 @@ public class ValidationService {
 
     public GameData getGame(int gameID) {
         return GAME_DAO.getGame(gameID);
+    }
+
+    public ChessGame.TeamColor checkUserColor(String username, GameData gameData) throws DataAccessException {
+        if (Objects.equals(gameData.whiteUsername(), username)) {
+            return ChessGame.TeamColor.WHITE;
+        } else if (Objects.equals(gameData.blackUsername(), username)) {
+            return ChessGame.TeamColor.BLACK;
+        }
+        throw new DataAccessException("Observers cannot resign the game.");
+    }
+
+
+    public void setGame(String game, int gameID) throws DataAccessException {
+        GAME_DAO.updateGameString(game, gameID);
+    }
+
+    public void setGameResign(int gameID, String username) throws DataAccessException {
+        GameData gameData = GAME_DAO.getGame(gameID);
+        ChessGame game = gameData.game();
+
+        checkUserColor(username, gameData);
+
+        if (checkIsResigned(gameID)) {
+            throw new DataAccessException("Game is already resigned.");
+        }
+
+        game.setResigned(true);
+        GAME_DAO.updateGameString(game.toString(), gameID);
+    }
+
+
+    public boolean checkIsResigned(int gameID) {
+        GameData gameData = GAME_DAO.getGame(gameID);
+        ChessGame game = gameData.game();
+        return game.isResigned();
+    }
+
+    public void setGameUsername(int gameID, String username) throws DataAccessException {
+        GameData gameData = getGame(gameID);
+
+        if (Objects.equals(username, gameData.whiteUsername())) {
+            GAME_DAO.deleteUsername(gameID, "white");
+        } else if (Objects.equals(username, gameData.blackUsername())) {
+            GAME_DAO.deleteUsername(gameID, "black");
+        }
     }
 }

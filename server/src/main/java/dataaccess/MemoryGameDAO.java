@@ -65,6 +65,16 @@ public class MemoryGameDAO implements GameDAOInterface {
         gameDatabase.clear();
     }
 
+    @Override
+    public void updateGameString(String game, int gameID) throws DataAccessException {
+
+    }
+
+    @Override
+    public void deleteUsername(int gameID, String color) throws DataAccessException {
+
+    }
+
     public static void resetGameIDs() {
         nextGameID = 1;
     }

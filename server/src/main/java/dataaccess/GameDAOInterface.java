@@ -56,4 +56,8 @@ public interface GameDAOInterface {
      * Deletes all games from the data store.
      */
     void deleteAllGames();
+
+    void updateGameString(String game, int gameID) throws DataAccessException;
+
+    void deleteUsername(int gameID, String color) throws DataAccessException;
 }

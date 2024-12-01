@@ -14,6 +14,7 @@ public class ChessGame {
 
     ChessBoard board;
     public TeamColor turn;
+    public boolean isResigned;
 
     public ChessGame() {
         board = new ChessBoard();
@@ -44,6 +45,14 @@ public class ChessGame {
     public enum TeamColor {
         WHITE,
         BLACK
+    }
+
+    public boolean isResigned() {
+        return isResigned;
+    }
+
+    public void setResigned(boolean resigned) {
+        isResigned = resigned;
     }
 
     /**

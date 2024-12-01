@@ -128,4 +128,36 @@ public class SQLGameDAO implements GameDAOInterface {
             throw new RuntimeException("Failed to delete all games: " + e.getMessage(), e);
         }
     }
+
+    public void updateGameString(String game, int gameID) throws DataAccessException {
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "UPDATE games SET gameState = ? WHERE gameID = ?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, game);
+                ps.setInt(2, gameID);
+                int rowsAffected = ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        }
+    }
+
+    @Override
+    public void deleteUsername(int gameID, String color) throws DataAccessException {
+        if (!color.equals("white") && !color.equals("black")) {
+            throw new IllegalArgumentException("Color must be 'white' or 'black'.");
+        }
+
+        try (var conn = DatabaseManager.getConnection()) {
+            var statement = "UPDATE games SET " + color + "Username = ? WHERE gameID = ?";
+            try (var ps = conn.prepareStatement(statement)) {
+                ps.setString(1, null);
+                ps.setInt(2, gameID);
+                ps.executeUpdate();
+            }
+        } catch (Exception e) {
+            throw new DataAccessException(String.format("Unable to update username: %s", e.getMessage()));
+        }
+    }
+
 }
