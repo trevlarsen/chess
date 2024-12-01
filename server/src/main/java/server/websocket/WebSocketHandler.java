@@ -15,53 +15,60 @@ import websocket.commands.*;
 import java.io.IOException;
 import java.util.Objects;
 
-import static java.lang.Character.getNumericValue;
-
 @WebSocket
 public class WebSocketHandler {
     private final ConnectionManager connections = new ConnectionManager();
     private final ValidationService service = new ValidationService();
 
-    public WebSocketHandler() throws DataAccessException {
+    public WebSocketHandler() {
     }
 
     @OnWebSocketMessage
-    public void onMessage(Session session, String message) throws DataAccessException, IOException {
+    public void onMessage(Session session, String message) throws IOException {
         var command = new Gson().fromJson(message, UserGameCommand.class);
         switch (command.getCommandType()) {
             case CONNECT -> connectPlayer(session, message);
             case MAKE_MOVE -> makeMove(session, message);
-            case LEAVE -> leaveGame(session, message);
-            case RESIGN -> resignGame(session, message);
+            case LEAVE -> leaveGame(message);
+            case RESIGN -> resignGame(message);
         }
     }
 
+    // Connect Player methods
     private void connectPlayer(Session session, String message) throws IOException {
         var command = new Gson().fromJson(message, ConnectCommand.class);
         String authToken = command.getAuthToken();
         int gameID = command.getGameID();
+
         try {
+            // Validate authorization and game existence
             if (ValidationService.isUnauthorized(authToken) || service.getGame(gameID) == null) {
                 connections.add(authToken, session, gameID);
                 throw new IOException("Unauthorized");
             }
 
             String username = service.getUsername(authToken);
-            GameData gameData = service.getGame(command.getGameID());
+            GameData gameData = service.getGame(gameID);
 
-            String type;
-            if (Objects.equals(gameData.blackUsername(), username)) {
-                type = "BLACK";
-            } else if (Objects.equals(gameData.whiteUsername(), username)) {
-                type = "WHITE";
-            } else {
-                type = "an OBSERVER";
-            }
+            // Determine player type
+            String type = determinePlayerType(username, gameData);
             var notification = new Notification(username + " has joined as " + type);
+
+            // Notify and send game data
             sendGame(gameData, session, authToken);
-            connections.notifyOthers(authToken, new Gson().toJson(notification), gameData.gameID());
+            connections.notifyOthers(authToken, new Gson().toJson(notification), gameID);
         } catch (Exception e) {
             error(authToken, e);
+        }
+    }
+
+    private String determinePlayerType(String username, GameData gameData) {
+        if (Objects.equals(gameData.blackUsername(), username)) {
+            return "BLACK";
+        } else if (Objects.equals(gameData.whiteUsername(), username)) {
+            return "WHITE";
+        } else {
+            return "an OBSERVER";
         }
     }
 
@@ -73,92 +80,139 @@ public class WebSocketHandler {
         connections.notifyPlayer(authToken, new Gson().toJson(loadGame));
     }
 
-    private void makeMove(Session session, String message) throws IOException, DataAccessException {
-//        var command = new Gson().fromJson(message, MakeMove.class);
-//        String authToken = command.getAuthString();
-//        try {
-//            String username = service.getUsername(authToken);
-//            GameData gameData = service.getGame(command.getGameID());
-//            ChessGame game = gameData.game();
-//            ChessGame.TeamColor playerColor = service.checkUserColor(username, gameData);
-//            ChessGame.TeamColor pieceColor = game.getBoard().getPiece(command.getMove().startPos).getTeamColor();
-//            if (pieceColor != playerColor) {
-//                throw new DataAccessException("You can only move your pieces.");
-//            }
-//            ChessMove move = command.getMove();
-//            game.makeMove(move);
-//
-//            int gameID = gameData.gameID();
-//            var gameString = new Gson().toJson(game);
-//            service.setGame(gameString, gameID);
-//
-//            char startCol = (char) (move.startPos.col + 96);
-//            char endCol = (char) (move.endPos.col + 96);
-//
-//            var loadGame = new LoadGame(gameString);
-//            connections.notifyOthers(authToken, new Gson().toJson(loadGame), gameID);
-//            sendGame(gameData, session, authToken);
-//            var notification = new Notification("A move has been made: " + startCol + (9 - move.startPos.row) + " to " + endCol + (9 - move.endPos.row) + ".");
-//            connections.notifyOthers(authToken, new Gson().toJson(notification), gameData.gameID());
-//
-//            boolean checkIfCheckmate = false;
-//            if (game.isInCheckmate(ChessGame.TeamColor.WHITE)) {
-//                var checkMateWhite = new Notification("WHITE is in checkmate!");
-//                connections.broadcast(new Gson().toJson(checkMateWhite), gameID);
-//                checkIfCheckmate = true;
-//            }
-//            if (game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
-//                var checkMateBlack = new Notification("BLACK is in checkmate!");
-//                connections.broadcast(new Gson().toJson(checkMateBlack), gameID);
-//                checkIfCheckmate = true;
-//            }
-//            if (!checkIfCheckmate) {
-//                if (game.isInCheck(ChessGame.TeamColor.WHITE)) {
-//                    var checkWhite = new Notification("WHITE is in check!");
-//                    connections.broadcast(new Gson().toJson(checkWhite), gameID);
-//                }
-//                if (game.isInCheck(ChessGame.TeamColor.BLACK)) {
-//                    var checkBlack = new Notification("WHITE is in check!");
-//                    connections.broadcast(new Gson().toJson(checkBlack), gameID);
-//                }
-//            }
-//
-//
-//        } catch (Exception e) {
-//            error(authToken, e);
-//        }
+    // Make Move methods
+    private void makeMove(Session session, String message) throws IOException {
+        var command = new Gson().fromJson(message, MakeMove.class);
+        String authToken = command.getAuthToken();
+        int gameID = command.getGameID();
+
+        try {
+            validateAuthAndGame(authToken, session, gameID);
+
+            String username = service.getUsername(authToken);
+            GameData gameData = service.getGame(gameID);
+            ChessGame game = gameData.game();
+
+            validatePlayerMove(username, gameData, game, command.getMove());
+
+            ChessMove move = command.getMove();
+            game.makeMove(move);
+
+            updateGameState(authToken, game, gameID, gameData, session);
+
+            sendMoveNotification(authToken, gameID, move);
+
+            handleCheckAndCheckmate(game, gameID);
+        } catch (Exception e) {
+            error(authToken, e);
+        }
     }
 
-    public void leaveGame(Session session, String message) throws IOException {
-//        var command = new Gson().fromJson(message, Leave.class);
-//        String authToken = command.getAuthString();
-//        try {
-//            String username = service.getUsername(authToken);
-//            connections.remove(authToken);
-//            var notification = new Notification(username + " has left the game.");
-//            connections.notifyOthers(authToken, new Gson().toJson(notification), command.getGameID());
-//        } catch (Exception e) {
-//            error(authToken, e);
-//        }
+    private void validateAuthAndGame(String authToken, Session session, int gameID) throws IOException {
+        if (ValidationService.isUnauthorized(authToken) || service.getGame(gameID) == null) {
+            connections.add(authToken, session, gameID);
+            throw new IOException("Unauthorized");
+        }
     }
 
-    public void resignGame(Session session, String message) throws IOException {
-//        var command = new Gson().fromJson(message, Resign.class);
-//        String authToken = command.getAuthString();
-//        try {
-//            String username = service.getUsername(authToken);
-//            service.setGameResign(command.getGameID(), username);
-//            var notification = new Notification(username + " has resigned.");
-//            connections.broadcast(new Gson().toJson(notification), command.getGameID());
-//            connections.remove(authToken);
-//        } catch (Exception e) {
-//            error(authToken, e);
-//        }
+    private void validatePlayerMove(String username,
+                                    GameData gameData,
+                                    ChessGame game,
+                                    ChessMove move) throws DataAccessException {
+        ChessGame.TeamColor playerColor = service.checkUserColor(username, gameData);
+        ChessGame.TeamColor pieceColor = game.getBoard().getPiece(move.getStartPosition()).getTeamColor();
+        if (pieceColor != playerColor) {
+            throw new DataAccessException("You can only move your pieces.");
+        }
+    }
+
+    private void updateGameState(String authToken,
+                                 ChessGame game,
+                                 int gameID,
+                                 GameData gameData,
+                                 Session session) throws IOException, DataAccessException {
+        String gameString = new Gson().toJson(game);
+        service.setGame(gameString, gameID);
+
+        var loadGame = new LoadGame(gameString);
+        connections.notifyOthers(authToken, new Gson().toJson(loadGame), gameID);
+        sendGame(gameData, session, authToken);
+    }
+
+    private void sendMoveNotification(String authToken, int gameID, ChessMove move) throws IOException {
+        char startCol = (char) (move.getStartPosition().getColumn() + 96);
+        char endCol = (char) (move.getEndPosition().getColumn() + 96);
+
+        String moveDescription = startCol + (9 - move.getStartPosition().getRow()) +
+                " to " + endCol + (9 - move.getEndPosition().getRow());
+        var notification = new Notification("A move has been made: " + moveDescription + ".");
+        connections.notifyOthers(authToken, new Gson().toJson(notification), gameID);
+    }
+
+    private void handleCheckAndCheckmate(ChessGame game, int gameID) throws IOException {
+        boolean isCheckmate = false;
+
+        if (game.isInCheckmate(ChessGame.TeamColor.WHITE)) {
+            broadcastNotification("WHITE is in checkmate", gameID);
+            isCheckmate = true;
+        }
+        if (game.isInCheckmate(ChessGame.TeamColor.BLACK)) {
+            broadcastNotification("BLACK is in checkmate", gameID);
+            isCheckmate = true;
+        }
+
+        if (!isCheckmate) {
+            if (game.isInCheck(ChessGame.TeamColor.WHITE)) {
+                broadcastNotification("WHITE is in check", gameID);
+            }
+            if (game.isInCheck(ChessGame.TeamColor.BLACK)) {
+                broadcastNotification("BLACK is in check", gameID);
+            }
+        }
+    }
+
+    private void broadcastNotification(String message, int gameID) throws IOException {
+        var notification = new Notification(message);
+        connections.broadcast(new Gson().toJson(notification), gameID);
+    }
+
+
+    // Leave Game methods
+    public void leaveGame(String message) throws IOException {
+        var command = new Gson().fromJson(message, Leave.class);
+        String authToken = command.getAuthToken();
+        try {
+            String username = service.getUsername(authToken);
+            connections.remove(authToken);
+
+            int gameID = command.getGameID();
+            service.setGameUsername(gameID, username);
+
+            var notification = new Notification(username + " has left the game.");
+            connections.notifyOthers(authToken, new Gson().toJson(notification), command.getGameID());
+        } catch (Exception e) {
+            error(authToken, e);
+        }
+    }
+
+    public void resignGame(String message) throws IOException {
+        var command = new Gson().fromJson(message, Resign.class);
+        String authToken = command.getAuthToken();
+        try {
+            String username = service.getUsername(authToken);
+            service.setGameResign(command.getGameID(), username);
+            var notification = new Notification(username + " has resigned.");
+            connections.broadcast(new Gson().toJson(notification), command.getGameID());
+            connections.remove(authToken);
+        } catch (Exception e) {
+            error(authToken, e);
+        }
     }
 
     public void error(String authToken, Exception exception) throws IOException {
         var error = new ErrorMessage("Error: " + exception.toString());
         connections.notifyPlayer(authToken, new Gson().toJson(error));
+        connections.remove(authToken);
     }
 
 }
