@@ -47,7 +47,7 @@ public class WebSocketFacade extends Endpoint {
 
     // Receiving functions
     public void loadGame(String serverMessage) {
-        handleMessage(serverMessage, LoadGame.class, notificationHandler::loadGame);
+        handleMessage(serverMessage, LoadGameMessage.class, notificationHandler::loadGame);
     }
 
     public void error(String serverMessage) {
@@ -55,7 +55,7 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void notification(String serverMessage) {
-        handleMessage(serverMessage, Notification.class, notificationHandler::notify);
+        handleMessage(serverMessage, NotificationMessage.class, notificationHandler::notify);
     }
 
     // Sending functions
@@ -68,15 +68,15 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void makeMove(String authToken, int gameID, ChessMove move) throws IOException {
-        sendCommand(new MakeMove(authToken, gameID, move));
+        sendCommand(new MakeMoveCommand(authToken, gameID, move));
     }
 
     public void resignGame(String authToken, int gameID) throws IOException {
-        sendCommand(new Resign(authToken, gameID));
+        sendCommand(new ResignCommand(authToken, gameID));
     }
 
     public void leaveGame(String authToken, int gameID) throws IOException {
-        sendCommand(new Leave(authToken, gameID));
+        sendCommand(new LeaveCommand(authToken, gameID));
     }
 
     // Helper methods

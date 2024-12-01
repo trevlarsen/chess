@@ -4,8 +4,8 @@ import chess.ChessGame;
 import model.GameData;
 import ui.websocket.NotificationHandler;
 import websocket.messages.ErrorMessage;
-import websocket.messages.LoadGame;
-import websocket.messages.Notification;
+import websocket.messages.LoadGameMessage;
+import websocket.messages.NotificationMessage;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -189,12 +189,12 @@ public class MenuManager implements NotificationHandler {
     }
 
     @Override
-    public void notify(Notification notification) {
-        System.out.println(notification.getMessage());
+    public void notify(NotificationMessage notificationMessage) {
+        System.out.println(notificationMessage.getMessage());
     }
 
     @Override
-    public void loadGame(LoadGame loadGame) {
+    public void loadGame(LoadGameMessage loadGame) {
         System.out.println("Received game");
     }
 

@@ -52,7 +52,7 @@ public class WebSocketHandler {
 
             // Determine player type
             String type = determinePlayerType(username, gameData);
-            var notification = new Notification(username + " has joined as " + type);
+            var notification = new NotificationMessage(username + " has joined as " + type);
 
             // Notify and send game data
             sendGame(gameData, session, authToken);
@@ -76,13 +76,13 @@ public class WebSocketHandler {
         ChessGame game = gameData.game();
         connections.add(authToken, session, gameData.gameID());
 
-        var loadGame = new LoadGame(new Gson().toJson(game));
+        var loadGame = new LoadGameMessage(new Gson().toJson(game));
         connections.notifyPlayer(authToken, new Gson().toJson(loadGame));
     }
 
     // Make Move methods
     private void makeMove(Session session, String message) throws IOException {
-        var command = new Gson().fromJson(message, MakeMove.class);
+        var command = new Gson().fromJson(message, MakeMoveCommand.class);
         String authToken = command.getAuthToken();
         int gameID = command.getGameID();
 
@@ -134,7 +134,7 @@ public class WebSocketHandler {
         String gameString = new Gson().toJson(game);
         service.setGame(gameString, gameID);
 
-        var loadGame = new LoadGame(gameString);
+        var loadGame = new LoadGameMessage(gameString);
         connections.notifyOthers(authToken, new Gson().toJson(loadGame), gameID);
         sendGame(gameData, session, authToken);
     }
@@ -145,7 +145,7 @@ public class WebSocketHandler {
 
         String moveDescription = startCol + (9 - move.getStartPosition().getRow()) +
                 " to " + endCol + (9 - move.getEndPosition().getRow());
-        var notification = new Notification("A move has been made: " + moveDescription + ".");
+        var notification = new NotificationMessage("A move has been made: " + moveDescription + ".");
         connections.notifyOthers(authToken, new Gson().toJson(notification), gameID);
     }
 
@@ -172,14 +172,14 @@ public class WebSocketHandler {
     }
 
     private void broadcastNotification(String message, int gameID) throws IOException {
-        var notification = new Notification(message);
+        var notification = new NotificationMessage(message);
         connections.broadcast(new Gson().toJson(notification), gameID);
     }
 
 
     // Leave Game methods
     public void leaveGame(String message) throws IOException {
-        var command = new Gson().fromJson(message, Leave.class);
+        var command = new Gson().fromJson(message, LeaveCommand.class);
         String authToken = command.getAuthToken();
         try {
             String username = service.getUsername(authToken);
@@ -188,7 +188,7 @@ public class WebSocketHandler {
             int gameID = command.getGameID();
             service.setGameUsername(gameID, username);
 
-            var notification = new Notification(username + " has left the game.");
+            var notification = new NotificationMessage(username + " has left the game.");
             connections.notifyOthers(authToken, new Gson().toJson(notification), command.getGameID());
         } catch (Exception e) {
             error(authToken, e);
@@ -196,12 +196,12 @@ public class WebSocketHandler {
     }
 
     public void resignGame(String message) throws IOException {
-        var command = new Gson().fromJson(message, Resign.class);
+        var command = new Gson().fromJson(message, ResignCommand.class);
         String authToken = command.getAuthToken();
         try {
             String username = service.getUsername(authToken);
             service.setGameResign(command.getGameID(), username);
-            var notification = new Notification(username + " has resigned.");
+            var notification = new NotificationMessage(username + " has resigned.");
             connections.broadcast(new Gson().toJson(notification), command.getGameID());
             connections.remove(authToken);
         } catch (Exception e) {
