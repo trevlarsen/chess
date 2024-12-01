@@ -3,8 +3,9 @@ package ui;
 import chess.ChessGame;
 import model.GameData;
 import ui.websocket.NotificationHandler;
+import websocket.messages.Error;
 import websocket.messages.ErrorMessage;
-import websocket.messages.LoadGameMessage;
+import websocket.messages.LoadGame;
 import websocket.messages.Notification;
 
 import java.io.IOException;
@@ -22,7 +23,9 @@ public class MenuManager implements NotificationHandler {
 
     public String loggedInUsername = null;
     public String loggedInAuth = null;
-    public ChessGame currentGame = null;
+    public int currentGameID = -1;
+    public int currentGameIndex = -1;
+    public ChessGame.TeamColor currentPlayerColor = null;
     public ArrayList<GameData> listedGames = new ArrayList<>();
 
     private MenuState currentState;
@@ -188,12 +191,13 @@ public class MenuManager implements NotificationHandler {
 
     @Override
     public void notify(Notification notification) {
-        System.out.println(SET_TEXT_COLOR_GREEN + SET_BG_COLOR_BLACK + "\n" + notification.getMessage());
+        System.out.println(notification.getMessage());
 //        client.printPrompt();
     }
 
     @Override
-    public void loadGame(LoadGameMessage loadGame) {
+    public void loadGame(LoadGame loadGame) {
+        System.out.println("Received game");
 //        client.setBoard(new Gson().fromJson(loadGame.game, ChessGame.class));
 //        client.drawGameUI();
 //        client.printPrompt();
@@ -201,7 +205,7 @@ public class MenuManager implements NotificationHandler {
 
     @Override
     public void error(ErrorMessage error) {
-        System.out.println(SET_TEXT_COLOR_BLUE + SET_BG_COLOR_BLACK + error.getErrorMessage());
+        System.out.println(error.getErrorMessage());
 //        client.printPrompt();
     }
 }

@@ -15,7 +15,8 @@ public class ErrorMessage extends ServerMessage {
     @Override
     public String toString() {
         return "ErrorMessage{" +
-                "errorMessage='" + errorMessage +
+                "errorMessage='" + errorMessage + '\'' +
+                ", serverMessageType=" + serverMessageType +
                 '}';
     }
 }

@@ -76,43 +76,40 @@ public class PostloginMenu {
         }
     }
 
-    private MenuState playGame() {
-        try {
-            ui.refreshGames();
+    private MenuState playGame() throws IOException {
+        ui.refreshGames();
 
-            if (ui.listedGames.isEmpty()) {
-                printNoGamesMessage();
-                return MenuState.POSTLOGIN;
-            }
-
-            System.out.println("Which game would you like to play?");
-            int gameIndex = getValidOption(ui.listedGames.size()) - 1;
-            GameData selectedGame = ui.listedGames.get(gameIndex);
-
-            String color;
-            while (true) {
-                System.out.print("Please select a color to play (white/black): ");
-                color = scanner.nextLine().trim().toLowerCase();
-
-                if (color.equals("white") || color.equals("black")) {
-                    break;
-                } else {
-                    System.out.print("Invalid color. ");
-                }
-            }
-            ChessGame.TeamColor playerColor = ChessGame.TeamColor.WHITE;
-            if (color.equals("black")) {
-                playerColor = ChessGame.TeamColor.BLACK;
-            }
-
-            ui.serverFacade.joinGame(playerColor, selectedGame.gameID(), ui.loggedInAuth);
-            ui.currentGame = selectedGame.game();
-            printResult("You joined the game '" + selectedGame.gameName() + "' as " + color + ".");
-            return MenuState.GAME;
-        } catch (IOException e) {
-            printError("Join Game", e.getMessage());
+        if (ui.listedGames.isEmpty()) {
+            printNoGamesMessage();
             return MenuState.POSTLOGIN;
         }
+
+        System.out.println("Which game would you like to play?");
+        int gameIndex = getValidOption(ui.listedGames.size()) - 1;
+        GameData selectedGame = ui.listedGames.get(gameIndex);
+
+        String color;
+        while (true) {
+            System.out.print("Please select a color to play (white/black): ");
+            color = scanner.nextLine().trim().toLowerCase();
+
+            if (color.equals("white") || color.equals("black")) {
+                break;
+            } else {
+                System.out.print("Invalid color. ");
+            }
+        }
+        ChessGame.TeamColor playerColor = ChessGame.TeamColor.WHITE;
+        if (color.equals("black")) {
+            playerColor = ChessGame.TeamColor.BLACK;
+        }
+
+        ui.serverFacade.joinGame(playerColor, selectedGame.gameID(), ui.loggedInAuth);
+        ui.currentGameID = selectedGame.gameID();
+        ui.currentGameIndex = gameIndex;
+        ui.currentPlayerColor = playerColor;
+        printResult("You joined the game '" + selectedGame.gameName() + "' as " + color + ".");
+        return MenuState.GAME;
     }
 
     private MenuState observeGame() {
@@ -127,7 +124,9 @@ public class PostloginMenu {
             System.out.println("Which game would you like to observe?");
             int gameIndex = getValidOption(ui.listedGames.size()) - 1;
             GameData selectedGame = ui.listedGames.get(gameIndex);
-            ui.currentGame = selectedGame.game();
+            ui.serverFacade.observeGame(selectedGame.gameID(), ui.loggedInAuth);
+            ui.currentGameID = selectedGame.gameID();
+            ui.currentGameIndex = gameIndex;
 
             printResult("You are now observing the game '" + selectedGame.gameName() + "'.");
             return MenuState.GAME;

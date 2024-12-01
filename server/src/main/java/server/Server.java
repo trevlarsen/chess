@@ -1,5 +1,6 @@
 package server;
 
+import server.websocket.WebSocketHandler;
 import spark.Spark;
 
 public class Server {
@@ -27,6 +28,7 @@ public class Server {
      * Registers the endpoints for the server.
      */
     private void registerEndpoints() {
+        Spark.webSocket("/ws", WebSocketHandler.class);
         Spark.delete("/db", (req, res) -> BaseHandler.getInstance().clear(res));
         Spark.post("/user", (req, res) -> UserHandler.getInstance().register(req, res));
         Spark.post("/session", (req, res) -> UserHandler.getInstance().login(req, res));

@@ -25,13 +25,13 @@ public class ServerFacade {
 
     public ServerFacade(String url, NotificationHandler notificationHandler, boolean testing) throws IOException {
         serverUrl = url;
-        if (testing) {
-            ws = null;
-        } else {
-            ws = new WebSocketFacade(url, notificationHandler);
-        }
+//        if (testing) {
+//            ws = null;
+//        } else {
+//            ws = new WebSocketFacade(url, notificationHandler);
+//        }
+        ws = new WebSocketFacade(url, notificationHandler);
     }
-
 
     public RegisterResponse register(String username, String password, String email) throws IOException {
         var path = "/user";
@@ -57,11 +57,19 @@ public class ServerFacade {
         return createGameResponse.gameID();
     }
 
-    // Remove this when modified it to join as player or observer with websocket
     public void joinGame(ChessGame.TeamColor playerColor, Integer gameID, String authToken) throws IOException {
-        var path = "/game";
-        var joinGameRequest = new JoinGameRequest(playerColor, gameID);
-        this.makeRequest("PUT", path, joinGameRequest, authToken, null);
+        try {
+            var path = "/game";
+            var joinGameRequest = new JoinGameRequest(playerColor, gameID);
+            this.makeRequest("PUT", path, joinGameRequest, authToken, null);
+            ws.connectPlayer(authToken, gameID);
+        } catch (Exception e) {
+            ws.connectPlayer(authToken, gameID);
+        }
+    }
+
+    public void observeGame(Integer gameID, String authToken) throws IOException {
+        ws.connectPlayer(authToken, gameID);
     }
 
     public ArrayList<GameData> listGames(String authToken) throws IOException {

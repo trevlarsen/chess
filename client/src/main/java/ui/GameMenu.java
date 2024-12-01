@@ -1,22 +1,27 @@
 package ui;
 
-import chess.ChessGame;
+import chess.ChessMove;
+import chess.ChessPosition;
 
-import java.awt.*;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import static ui.MenuManager.*;
 
 public class GameMenu {
 
     private final MenuManager ui;
+    private ArrayList<ChessMove> moves = new ArrayList<>();
 
     public GameMenu(MenuManager ui) {
         this.ui = ui;
     }
 
-    public MenuState run() {
+    public MenuState run() throws IOException {
         MenuState result = MenuState.GAME;
-        ui.boardPrinter.tempPrint();
+        ui.boardPrinter.reprint(ui.currentGameIndex, ui.currentPlayerColor, moves);
+        moves = new ArrayList<>();
         printGameMenu();
         int input = getValidOption(6);
 
@@ -36,9 +41,55 @@ public class GameMenu {
         System.out.println("makeMove functionality yet to be implemented");
     }
 
-    private void highlightMoves() {
-        System.out.println("highlightMoves moves functionality yet to be implemented");
+    private void highlightMoves() throws IOException {
+        System.out.println("Highlight moves for piece (Enter coordinate, for example a1): ");
+
+        // Prompt until valid input is given
+        String input = getValidCoordinate();
+
+        // Convert the input coordinate to board position (row, column)
+        ChessPosition start = convertCoordinateToPosition(input);
+        System.out.println(start);
+
+        // Refresh the game and get valid moves for the selected piece
+        ui.refreshGames();
+        var game = ui.listedGames.get(ui.currentGameIndex).game();
+
+        // Reassign the moves (assuming you have an appropriate field for this)
+        // Example: moves = validMoves;
+        moves = (ArrayList<ChessMove>) game.validMoves(start);
     }
+
+    private String getValidCoordinate() {
+        String input = "";
+        boolean isValid = false;
+        while (!isValid) {
+            input = scanner.nextLine().trim().toLowerCase();  // Assuming ui.getUserInput() gets user input
+            // Validate input: exactly 2 characters, first is letter a-h, second is digit 1-8
+            if (input.length() == 2 && input.matches("[a-h][1-8]")) {
+                isValid = true;
+            } else {
+                System.out.println("Invalid input. Please enter a valid coordinate (e.g., a1, h8).");
+            }
+        }
+        return input;
+    }
+
+    private ChessPosition convertCoordinateToPosition(String coordinate) {
+        // Extract column (letter) and row (digit) from the input
+        char col = coordinate.charAt(0);  // 'a' to 'h'
+        char row = coordinate.charAt(1);  // '1' to '8'
+
+        // Convert the column (a-h) to an index (0-7)
+        int colIndex = col - 'a';  // 'a' becomes 0, 'b' becomes 1, ..., 'h' becomes 7
+
+        // Convert the row (1-8) to an index (0-7)
+        int rowIndex = 8 - (row - '0');  // '1' becomes 7, '8' becomes 0 (for reverse board)
+
+        // Return the ChessPosition object
+        return new ChessPosition(rowIndex + 1, colIndex + 1);
+    }
+
 
     private void resign() {
         System.out.println("resign functionality yet to be implemented");
@@ -50,6 +101,5 @@ public class GameMenu {
     }
 
     private void redrawBoard() {
-        System.out.println("redrawBoard moves functionality yet to be implemented");
     }
 }

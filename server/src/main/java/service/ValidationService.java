@@ -1,12 +1,12 @@
 package service;
 
+import model.GameData;
 import org.mindrot.jbcrypt.BCrypt;
 
 import java.lang.reflect.Field;
 import java.util.Objects;
 
-import static service.BaseService.AUTH_DAO;
-import static service.BaseService.usingSql;
+import static service.BaseService.*;
 
 /**
  * A utility service responsible for validating inputs and checking authorization.
@@ -68,5 +68,14 @@ public class ValidationService {
             return BCrypt.checkpw(inputtedPassword, storedEncryptedPassword);
         }
         return Objects.equals(inputtedPassword, storedEncryptedPassword);
+    }
+
+    public String getUsername(String authToken) {
+        var authData = AUTH_DAO.getAuth(authToken);
+        return authData.username();
+    }
+
+    public GameData getGame(int gameID) {
+        return GAME_DAO.getGame(gameID);
     }
 }
