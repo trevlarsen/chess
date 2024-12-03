@@ -91,7 +91,7 @@ public class ValidationService {
     }
 
 
-    public void setGame(String game, int gameID) throws DataAccessException {
+    public void setGame(ChessGame game, int gameID) throws DataAccessException {
         GAME_DAO.updateGameString(game, gameID);
     }
 
@@ -106,7 +106,7 @@ public class ValidationService {
         }
 
         game.setResigned(true);
-        GAME_DAO.updateGameString(game.toString(), gameID);
+        GAME_DAO.updateGameString(game, gameID);
     }
 
 

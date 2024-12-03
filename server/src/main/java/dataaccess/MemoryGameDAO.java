@@ -66,7 +66,7 @@ public class MemoryGameDAO implements GameDAOInterface {
     }
 
     @Override
-    public void updateGameString(String game, int gameID) throws DataAccessException {
+    public void updateGameString(ChessGame game, int gameID) throws DataAccessException {
 
     }
 

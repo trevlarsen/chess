@@ -87,11 +87,12 @@ public class SQLGameDAO implements GameDAOInterface {
                 ChessGame game = gson.fromJson(rs.getString("gameState"), ChessGame.class);  // Deserialize JSON to ChessGame
                 games.add(new GameData(
                         rs.getInt("gameID"),
-                        rs.getString("whiteUsername"),
-                        rs.getString("blackUsername"),
+                        rs.getString("whiteUsername") != null ? rs.getString("whiteUsername") : "OPEN",
+                        rs.getString("blackUsername") != null ? rs.getString("blackUsername") : "OPEN",
                         rs.getString("gameName"),
-                        game
+                        gson.fromJson(rs.getString("gameState"), ChessGame.class)
                 ));
+
             }
         } catch (SQLException | DataAccessException e) {
             throw new RuntimeException("Failed to retrieve all games: " + e.getMessage(), e);
@@ -129,16 +130,19 @@ public class SQLGameDAO implements GameDAOInterface {
         }
     }
 
-    public void updateGameString(String game, int gameID) throws DataAccessException {
-        try (var conn = DatabaseManager.getConnection()) {
-            var statement = "UPDATE games SET gameState = ? WHERE gameID = ?";
-            try (var ps = conn.prepareStatement(statement)) {
-                ps.setString(1, game);
-                ps.setInt(2, gameID);
-                int rowsAffected = ps.executeUpdate();
+    @Override
+    public void updateGameString(ChessGame game, int gameID) throws DataAccessException {
+        String sql = "UPDATE games SET gameState = ? WHERE gameID = ?";
+        try (var conn = DatabaseManager.getConnection();
+             var statement = conn.prepareStatement(sql)) {
+            statement.setString(1, gson.toJson(game)); // Serialize game state to JSON
+            statement.setInt(2, gameID); // Use the game ID from GameData
+            int rowsAffected = statement.executeUpdate();
+            if (rowsAffected == 0) {
+                throw new DataAccessException("No game was updated. Game ID might not exist.");
             }
-        } catch (Exception e) {
-            throw new DataAccessException(String.format("Unable to read data: %s", e.getMessage()));
+        } catch (SQLException | DataAccessException e) {
+            throw new DataAccessException("Failed to update game: " + e.getMessage());
         }
     }
 
@@ -159,5 +163,6 @@ public class SQLGameDAO implements GameDAOInterface {
             throw new DataAccessException(String.format("Unable to update username: %s", e.getMessage()));
         }
     }
+
 
 }

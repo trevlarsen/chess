@@ -92,6 +92,9 @@ public class WebSocketHandler {
             String username = service.getUsername(authToken);
             GameData gameData = service.getGame(gameID);
             ChessGame game = gameData.game();
+            if (game.isResigned()) {
+                throw new IOException("Game is resigned. No moves allowed.");
+            }
 
             validatePlayerMove(username, gameData, game, command.getMove());
 
@@ -132,7 +135,7 @@ public class WebSocketHandler {
                                  GameData gameData,
                                  Session session) throws IOException, DataAccessException {
         String gameString = new Gson().toJson(game);
-        service.setGame(gameString, gameID);
+        service.setGame(game, gameID);
 
         var loadGame = new LoadGameMessage(gameString);
         connections.notifyOthers(authToken, new Gson().toJson(loadGame), gameID);

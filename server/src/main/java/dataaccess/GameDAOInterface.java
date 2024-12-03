@@ -57,7 +57,7 @@ public interface GameDAOInterface {
      */
     void deleteAllGames();
 
-    void updateGameString(String game, int gameID) throws DataAccessException;
+    void updateGameString(ChessGame game, int gameID) throws DataAccessException;
 
     void deleteUsername(int gameID, String color) throws DataAccessException;
 }

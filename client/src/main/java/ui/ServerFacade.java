@@ -59,9 +59,6 @@ public class ServerFacade {
 
     public void observeGame(Integer gameID, String authToken) throws IOException {
         ws.connectPlayer(authToken, gameID);
-        makeMove("the", 1, new ChessMove(new ChessPosition(1, 1), new ChessPosition(1, 1), null));
-        leaveGame("the", 8);
-        resignGame("the", 8);
     }
 
     public ArrayList<GameData> listGames(String authToken) throws IOException {
