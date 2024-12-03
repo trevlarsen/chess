@@ -3,6 +3,7 @@ package ui;
 import chess.ChessMove;
 import chess.ChessPosition;
 
+import java.awt.*;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -19,9 +20,9 @@ public class GameMenu {
 
     public MenuState run() throws IOException {
         MenuState result = MenuState.GAME;
-        ui.boardPrinter.reprint(ui.currentGameIndex, ui.currentPlayerColor, moves);
+//        ui.boardPrinter.reprint(ui.currentGameIndex, ui.currentPlayerColor, moves);
         moves = new ArrayList<>();
-        printGameMenu();
+//        printGameMenu();
         int input = getValidOption(6);
 
         switch (input) {
@@ -30,8 +31,14 @@ public class GameMenu {
             case 3 -> this.resign();
             case 4 -> result = this.leaveGame();
             case 5 -> this.redrawBoard();
-            case 6 -> printHelp();
-            default -> System.out.println("Invalid option. Please try again.");
+            case 6 -> {
+                printHelp();
+                printGameMenu();
+            }
+            default -> {
+                System.out.println("Invalid option. Please try again.");
+                printGameMenu();
+            }
         }
         return result;
     }
@@ -84,15 +91,46 @@ public class GameMenu {
     }
 
 
-    private void resign() {
-        System.out.println("resign functionality yet to be implemented");
+    private void resign() throws IOException {
+        String input;
+
+        while (true) {
+            System.out.println("Are you sure that you would like to resign? (y/n): ");
+            input = scanner.nextLine().trim().toLowerCase();
+
+            if (input.equals("y")) {
+                ui.serverFacade.resignGame(ui.loggedInAuth, ui.currentGameID);
+                return;
+            } else if (input.equals("n")) {
+                System.out.println("Resignation cancelled ");
+                return;
+            } else {
+                System.out.println("Invalid input. Please enter 'y' or 'n'.");
+            }
+        }
     }
 
-    private MenuState leaveGame() {
-        System.out.println("leaveGame functionality yet to be implemented");
-        return MenuState.POSTLOGIN;
+
+    private MenuState leaveGame() throws IOException {
+        String input;
+
+        while (true) {
+            System.out.println("\nAre you sure that you would like to leave? (y/n): ");
+            input = scanner.nextLine().trim().toLowerCase();
+
+            if (input.equals("y")) {
+                ui.serverFacade.leaveGame(ui.loggedInAuth, ui.currentGameID);
+                return MenuState.POSTLOGIN;
+            } else if (input.equals("n")) {
+                System.out.println("Leave cancelled ");
+                return MenuState.GAME;
+            } else {
+                System.out.println("Invalid input. Please enter 'y' or 'n'.");
+            }
+        }
     }
 
-    private void redrawBoard() {
+    private void redrawBoard() throws IOException {
+        ui.boardPrinter.reprint(ui.currentGameIndex, ui.currentPlayerColor, new ArrayList<>());
     }
 }

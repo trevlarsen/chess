@@ -73,15 +73,15 @@ public class ServerFacade {
     }
 
     public void makeMove(String authToken, int gameID, ChessMove move) throws IOException {
-//        ws.makeMove(authToken, gameID, move);
+        ws.makeMove(authToken, gameID, move);
     }
 
     public void leaveGame(String authToken, int gameID) throws IOException {
-//        ws.leaveGame(authToken, gameID);
+        ws.leaveGame(authToken, gameID);
     }
 
     public void resignGame(String authToken, int gameID) throws IOException {
-//        ws.resignGame(authToken, gameID);
+        ws.resignGame(authToken, gameID);
     }
 
     private <T> T makeRequest(String method, String path, Object request, String authToken, Class<T> responseClass) throws IOException {

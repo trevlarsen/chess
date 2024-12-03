@@ -30,7 +30,7 @@ public class ChessBoardPrinter {
                 new String[]{"h", "g", "f", "e", "d", "c", "b", "a"};
 
         // Print the file labels (a-h or h-a)
-        System.out.print("  ");
+        System.out.print("\n  ");
         for (String file : files) {
             System.out.print(" " + file + " ");
         }
@@ -130,6 +130,6 @@ public class ChessBoardPrinter {
     public void reprint(int gameIndex, ChessGame.TeamColor color, ArrayList<ChessMove> moves) throws IOException {
         ui.refreshGames();
         var game = ui.listedGames.get(gameIndex).game().getBoard().pieces;
-        printBoard(game, color == ChessGame.TeamColor.WHITE, moves);
+        printBoard(game, color != ChessGame.TeamColor.WHITE, moves);
     }
 }

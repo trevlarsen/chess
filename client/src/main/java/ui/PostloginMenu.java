@@ -56,8 +56,12 @@ public class PostloginMenu {
             System.out.println("Available Games:");
             int index = 1;
             for (GameData game : ui.listedGames) {
-                System.out.printf("%d. '%s' - White: %s, Black: %s\n", index++, game.gameName(),
-                        game.whiteUsername(), game.blackUsername());
+                if (game.game().isResigned()) {
+                    System.out.printf("%d.  '%s' - GAME IS OVER\n", index++, game.gameName());
+                } else {
+                    System.out.printf("%d. '%s' - White: %s, Black: %s\n", index++, game.gameName(),
+                            game.whiteUsername(), game.blackUsername());
+                }
             }
             System.out.println(RESET_TEXT_COLOR);
         } catch (IOException e) {

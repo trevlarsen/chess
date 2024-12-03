@@ -47,7 +47,13 @@ public class WebSocketFacade extends Endpoint {
 
     // Receiving functions
     public void loadGame(String serverMessage) {
-        handleMessage(serverMessage, LoadGameMessage.class, notificationHandler::loadGame);
+        handleMessage(serverMessage, LoadGameMessage.class, message -> {
+            try {
+                notificationHandler.loadGame(message);
+            } catch (IOException e) {
+                System.out.println("Failed to load board. Please retry.");
+            }
+        });
     }
 
     public void error(String serverMessage) {

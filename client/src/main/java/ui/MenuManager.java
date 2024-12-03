@@ -49,7 +49,10 @@ public class MenuManager implements NotificationHandler {
             currentState = switch (currentState) {
                 case PRELOGIN -> preloginMenu.run();
                 case POSTLOGIN -> postloginMenu.run();
-                case GAME -> gameMenu.run();
+                case GAME -> {
+//                    printGameMenu();
+                    yield gameMenu.run();
+                }
                 default -> MenuState.QUIT;
             };
         }
@@ -190,16 +193,21 @@ public class MenuManager implements NotificationHandler {
 
     @Override
     public void notify(NotificationMessage notificationMessage) {
-        System.out.println(notificationMessage.getMessage());
+        printResult(notificationMessage.getMessage());
     }
 
     @Override
-    public void loadGame(LoadGameMessage loadGame) {
-        System.out.println("Received game");
+    public void loadGame(LoadGameMessage loadGame) throws IOException {
+        try {
+            boardPrinter.reprint(currentGameIndex, currentPlayerColor, new ArrayList<>());
+            printGameMenu();
+        } catch (IOException ex) {
+            System.out.println("Failed to load board. please retry");
+        }
     }
 
     @Override
     public void error(ErrorMessage error) {
-        System.out.println(error.getErrorMessage());
+        printResult(error.getErrorMessage());
     }
 }
