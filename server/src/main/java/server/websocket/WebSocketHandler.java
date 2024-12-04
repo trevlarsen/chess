@@ -2,6 +2,7 @@ package server.websocket;
 
 import chess.ChessGame;
 import chess.ChessMove;
+import chess.ChessPosition;
 import com.google.gson.Gson;
 import dataaccess.DataAccessException;
 import model.GameData;
@@ -92,8 +93,9 @@ public class WebSocketHandler {
             String username = service.getUsername(authToken);
             GameData gameData = service.getGame(gameID);
             ChessGame game = gameData.game();
-            if (game.isResigned()) {
-                throw new IOException("Game is resigned. No moves allowed.");
+            if (game.isResigned() || game.isInCheckmate(ChessGame.TeamColor.WHITE) || game.isInCheckmate(ChessGame.TeamColor.BLACK)
+                    || game.isInStalemate(ChessGame.TeamColor.WHITE) || game.isInStalemate(ChessGame.TeamColor.BLACK)) {
+                throw new IOException("Game is over. No moves allowed.");
             }
 
             validatePlayerMove(username, gameData, game, command.getMove());
@@ -123,7 +125,11 @@ public class WebSocketHandler {
                                     ChessGame game,
                                     ChessMove move) throws DataAccessException {
         ChessGame.TeamColor playerColor = service.checkUserColor(username, gameData);
-        ChessGame.TeamColor pieceColor = game.getBoard().getPiece(move.getStartPosition()).getTeamColor();
+        var piece = game.getBoard().getPiece(move.getStartPosition());
+        if (piece == null) {
+            throw new DataAccessException("There is no piece there");
+        }
+        ChessGame.TeamColor pieceColor = piece.getTeamColor();
         if (pieceColor != playerColor) {
             throw new DataAccessException("You can only move your pieces.");
         }
@@ -143,14 +149,29 @@ public class WebSocketHandler {
     }
 
     private void sendMoveNotification(String authToken, int gameID, ChessMove move) throws IOException {
-        char startCol = (char) (move.getStartPosition().getColumn() + 96);
-        char endCol = (char) (move.getEndPosition().getColumn() + 96);
+        String name = service.getUsername(authToken);
 
-        String moveDescription = startCol + (9 - move.getStartPosition().getRow()) +
-                " to " + endCol + (9 - move.getEndPosition().getRow());
-        var notification = new NotificationMessage("A move has been made: " + moveDescription + ".");
-        connections.notifyOthers(authToken, new Gson().toJson(notification), gameID);
+        String moveDescription = reversePosition(move.getStartPosition()) +
+                " to " + reversePosition(move.getEndPosition());
+        var notification = new NotificationMessage(name + " made a move: " + moveDescription + ".");
+        connections.broadcast(new Gson().toJson(notification), gameID);
+//        connections.notifyPlayer(authToken, new Gson().toJson(notification));
     }
+
+    private static String reversePosition(ChessPosition position) throws IOException {
+        int row = position.getRow() - 1; // Convert from 1-based to 0-based index
+        int col = position.getColumn() - 1; // Convert from 1-based to 0-based index
+
+        if (row < 0 || row > 7 || col < 0 || col > 7) {
+            throw new IOException(position + " is out of bounds.");
+        }
+
+        char colChar = (char) ('a' + col); // Convert column index to 'a'-'h'
+        char rowChar = (char) ('1' + row); // Convert row index to '1'-'8'
+
+        return "" + colChar + rowChar; // Return the position in chess notation (e.g., "a1", "h8")
+    }
+
 
     private void handleCheckAndCheckmate(ChessGame game, int gameID) throws IOException {
         boolean isCheckmate = false;
@@ -213,9 +234,8 @@ public class WebSocketHandler {
     }
 
     public void error(String authToken, Exception exception) throws IOException {
-        var error = new ErrorMessage("Error: " + exception.toString());
+        var error = new ErrorMessage("Error: " + exception.getMessage());
         connections.notifyPlayer(authToken, new Gson().toJson(error));
-        connections.remove(authToken);
     }
 
 }

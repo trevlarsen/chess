@@ -57,11 +57,25 @@ public class WebSocketFacade extends Endpoint {
     }
 
     public void error(String serverMessage) {
-        handleMessage(serverMessage, ErrorMessage.class, notificationHandler::error);
+//        handleMessage(serverMessage, ErrorMessage.class, notificationHandler::error);
+        handleMessage(serverMessage, ErrorMessage.class, message -> {
+            try {
+                notificationHandler.error(message);
+            } catch (IOException e) {
+                System.out.println("Failed to load error.");
+            }
+        });
     }
 
     public void notification(String serverMessage) {
-        handleMessage(serverMessage, NotificationMessage.class, notificationHandler::notify);
+//        handleMessage(serverMessage, NotificationMessage.class, notificationHandler::notify);
+        handleMessage(serverMessage, NotificationMessage.class, message -> {
+            try {
+                notificationHandler.notify(message);
+            } catch (IOException e) {
+                System.out.println("Failed to load notification.");
+            }
+        });
     }
 
     // Sending functions

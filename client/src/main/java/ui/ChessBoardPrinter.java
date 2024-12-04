@@ -7,6 +7,7 @@ import chess.ChessPosition;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class ChessBoardPrinter {
 
@@ -24,6 +25,8 @@ public class ChessBoardPrinter {
     }
 
     public void printBoard(ChessPiece[][] board, boolean isWhiteView, ArrayList<ChessMove> moves) {
+        // For white view, ranks should be 1-8 from bottom to top
+        // For black view, ranks should be 8-1 from bottom to top
         String[] ranks = isWhiteView ? new String[]{"8", "7", "6", "5", "4", "3", "2", "1"} :
                 new String[]{"1", "2", "3", "4", "5", "6", "7", "8"};
         String[] files = isWhiteView ? new String[]{"a", "b", "c", "d", "e", "f", "g", "h"} :
@@ -38,20 +41,23 @@ public class ChessBoardPrinter {
 
         // Print the board rows
         for (int row = 0; row < 8; row++) {
+            // Adjust the ranks and the pieces depending on the view
             System.out.print(ranks[row] + " ");
             for (int col = 0; col < 8; col++) {
-                int displayRow = isWhiteView ? row : 7 - row;
+                // Adjust for white or black view
+                int displayRow = isWhiteView ? 7 - row : row;
                 int displayCol = isWhiteView ? col : 7 - col;
+
                 ChessPiece piece = board[displayRow][displayCol];
-                String squareColor = (displayRow + displayCol) % 2 == 0 ? LIGHT_SQUARE : DARK_SQUARE;
+                String squareColor = (displayRow + displayCol) % 2 == 1 ? LIGHT_SQUARE : DARK_SQUARE;
 
                 // Highlight squares that are in the list of moves
                 if (isMoveInList(displayRow, displayCol, moves)) {
-                    squareColor = (displayRow + displayCol) % 2 == 0 ? LIGHT_GREEN_SQUARE : DARK_GREEN_SQUARE;
+                    squareColor = (displayRow + displayCol) % 2 == 1 ? LIGHT_GREEN_SQUARE : DARK_GREEN_SQUARE;
                 }
 
                 // Print the square with the piece's color
-                System.out.print(squareColor + getPieceRepresentation(piece) + RESET_COLOR);
+                System.out.print(squareColor + getPieceRepresentation(piece, isWhiteView) + RESET_COLOR);
             }
             System.out.println(" " + ranks[row]);
         }
@@ -64,6 +70,7 @@ public class ChessBoardPrinter {
         System.out.println();
     }
 
+
     /**
      * Checks if a specific square (row, col) is in the list of moves.
      *
@@ -74,10 +81,10 @@ public class ChessBoardPrinter {
      */
     private boolean isMoveInList(int row, int col, ArrayList<ChessMove> moves) {
         for (ChessMove move : moves) {
-            if (move.getStartPosition().getRow() == row && move.getStartPosition().getColumn() == col) {
+            if (move.getStartPosition().getRow() - 1 == row && move.getStartPosition().getColumn() - 1 == col) {
                 return true;  // start position is in the list of moves
             }
-            if (move.getEndPosition().getRow() == row && move.getEndPosition().getColumn() == col) {
+            if (move.getEndPosition().getRow() - 1 == row && move.getEndPosition().getColumn() - 1 == col) {
                 return true;  // end position is in the list of moves
             }
         }
@@ -90,11 +97,11 @@ public class ChessBoardPrinter {
      * @param piece the ChessPiece object
      * @return a string representing the piece (e.g., "W K" for White King)
      */
-    private String getPieceRepresentation(ChessPiece piece) {
+    private String getPieceRepresentation(ChessPiece piece, boolean isWhiteView) {
         if (piece == null) {
             return "   "; // empty square (three spaces)
         }
-        String color = isWhite(piece) ? WHITE_PIECE_COLOR : BLACK_PIECE_COLOR;  // White or Black piece
+        String color = (piece.getTeamColor() == ChessGame.TeamColor.WHITE ? WHITE_PIECE_COLOR : BLACK_PIECE_COLOR);
         // Make sure the piece symbol is centered in the 3-character wide space
         return color + String.format("%-3s", String.format("%2s", getSymbol(piece))) + RESET_COLOR;  // Center the piece symbol
     }
@@ -129,7 +136,18 @@ public class ChessBoardPrinter {
 
     public void reprint(int gameIndex, ChessGame.TeamColor color, ArrayList<ChessMove> moves) throws IOException {
         ui.refreshGames();
-        var game = ui.listedGames.get(gameIndex).game().getBoard().pieces;
-        printBoard(game, color != ChessGame.TeamColor.WHITE, moves);
+        var gameData = ui.listedGames.get(gameIndex);
+        var game = gameData.game().getBoard().pieces;
+        printBoard(game, color == ChessGame.TeamColor.WHITE, moves);
+//        System.out.println(gameData.game().getBoard());
+//        System.out.println(gameData.game().turn);
+    }
+
+    public void printboth(int gameIndex, ChessGame.TeamColor color, ArrayList<ChessMove> moves) throws IOException {
+        ui.refreshGames();
+        var gameData = ui.listedGames.get(gameIndex);
+        var game = gameData.game().getBoard().pieces;
+        printBoard(game, true, moves);
+        printBoard(game, false, moves);
     }
 }

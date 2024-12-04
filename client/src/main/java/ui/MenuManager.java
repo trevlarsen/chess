@@ -177,7 +177,7 @@ public class MenuManager implements NotificationHandler {
 
     public static void printGameMenu() {
         System.out.println("""
-                \nGame functionality coming soon!
+                \nGameplay Options
                 \t1. Make Move
                 \t2. Highlight Legal Moves
                 \t3. Resign
@@ -192,8 +192,10 @@ public class MenuManager implements NotificationHandler {
     }
 
     @Override
-    public void notify(NotificationMessage notificationMessage) {
+    public void notify(NotificationMessage notificationMessage) throws IOException {
         printResult(notificationMessage.getMessage());
+        boardPrinter.reprint(currentGameIndex, currentPlayerColor, new ArrayList<>());
+        printGameMenu();
     }
 
     @Override
@@ -207,7 +209,11 @@ public class MenuManager implements NotificationHandler {
     }
 
     @Override
-    public void error(ErrorMessage error) {
-        printResult(error.getErrorMessage());
+    public void error(ErrorMessage error) throws IOException {
+        System.out.println(SET_TEXT_BOLD + SET_TEXT_COLOR_YELLOW +
+                "\n" + error.getErrorMessage() + "\n"
+                + RESET_TEXT_BOLD_FAINT + RESET_TEXT_COLOR);
+        boardPrinter.reprint(currentGameIndex, currentPlayerColor, new ArrayList<>());
+        printGameMenu();
     }
 }

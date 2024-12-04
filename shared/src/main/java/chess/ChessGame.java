@@ -127,13 +127,13 @@ public class ChessGame {
         // Move the pieces
         board.addPiece(end, attacker);
         board.pieces[start.getRow() - 1][start.getColumn() - 1] = null;
-
         // Switch turns
         if (turn == TeamColor.WHITE) {
             setTeamTurn(TeamColor.BLACK);
         } else {
             setTeamTurn(TeamColor.WHITE);
         }
+        System.out.println(turn);
     }
 
     /**

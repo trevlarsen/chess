@@ -122,10 +122,20 @@ public class ChessBoard {
 
     @Override
     public String toString() {
-        var rep = new StringBuilder("Board");
-        for (int i = 0; i <= 7; i++) {
-            rep.append(Arrays.deepToString(pieces[i])).append("\n");
+        StringBuilder rep = new StringBuilder("Board\n");
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                ChessPiece piece = pieces[i][j];  // Assuming pieces is a 2D array of ChessPiece objects
+                if (piece != null) {
+                    rep.append(piece);  // Assuming ChessPiece has a toString() method
+                } else {
+                    rep.append(" . ");  // Represent empty square
+                }
+                if (j < 7) rep.append(" ");  // Add space between columns
+            }
+            rep.append("\n");  // Newline after each row
         }
         return rep.toString();
     }
+
 }

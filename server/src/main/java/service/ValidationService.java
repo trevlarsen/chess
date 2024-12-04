@@ -87,7 +87,7 @@ public class ValidationService {
         } else if (Objects.equals(gameData.blackUsername(), username)) {
             return ChessGame.TeamColor.BLACK;
         }
-        throw new DataAccessException("Observers cannot resign the game.");
+        throw new DataAccessException("Observers may only view the game.");
     }
 
 
